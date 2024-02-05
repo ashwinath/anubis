@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 
+	"github.com/ashwinath/anubis/pkg/common"
 	"github.com/ashwinath/anubis/pkg/config"
 	"github.com/ashwinath/anubis/pkg/linux"
 )
@@ -19,15 +20,20 @@ func main() {
 	}
 
 	switch *target {
-	case "fedora":
-		fedora(c)
+	case "fedora-server":
+		fedoraServer(c)
 	default:
 	}
 }
 
-func fedora(c *config.Config) {
+func fedoraServer(c *config.Config) {
 	err := linux.FSTab(c.FedoraServer.FSTab)
 	if err != nil {
 		log.Printf("error editing /etc/fstab: %v\n", err)
+	}
+
+	err = common.Pip(c.FedoraServer.Python.Packages)
+	if err != nil {
+		log.Printf("error running pip: %v", err)
 	}
 }

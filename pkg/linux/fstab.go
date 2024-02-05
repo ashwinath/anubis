@@ -69,7 +69,7 @@ func FSTab(fstabEntries []string) error {
 
 	out, err := exec.Command("mount", "-a").CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", out, err)
+		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 
 	return nil
