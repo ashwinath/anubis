@@ -15,6 +15,8 @@ const newLine = "\n"
 const sshdAnubisConfig = "/etc/ssh/sshd_config.d/anubis.conf"
 
 func SSHAuthorizedKeys(keys []string, isDarwin bool) error {
+	logger.Infof("Updating ssh authorized_keys")
+
 	home := linuxHome
 	if isDarwin {
 		home = darwinHome
@@ -88,6 +90,8 @@ func SSHAuthorizedKeys(keys []string, isDarwin bool) error {
 }
 
 func HardenSSHDaemon() error {
+	logger.Infof("Hardening sshd")
+
 	if _, err := os.Stat(sshdAnubisConfig); err != nil {
 		_, err := os.Create(sshdAnubisConfig)
 		if err != nil {

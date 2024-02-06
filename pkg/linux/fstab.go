@@ -15,6 +15,8 @@ const comment = "#"
 const fstabLocation = "/etc/fstab"
 
 func FSTab(fstabEntries []string) error {
+	logger.Infof("updating /etc/fstab")
+
 	// Create all directories first
 	for _, entry := range fstabEntries {
 		directory := strings.Split(entry, spacebar)[1]

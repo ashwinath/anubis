@@ -17,6 +17,7 @@ const tmpBinariesDir = "/tmp/anubis/binaries"
 const tmpRunBinariesDir = "/tmp/anubis/runbinaries"
 
 func InstallBinaries(binaries []config.Binary) error {
+	logger.Infof("Installing binaries")
 	// Create temp folder
 	if _, err := os.Stat(tmpBinariesDir); err != nil {
 		if err := os.MkdirAll(tmpBinariesDir, 0755); err != nil {
@@ -65,6 +66,8 @@ func InstallBinaries(binaries []config.Binary) error {
 		}
 	}
 
+	logger.Infof("Finished installing binaries")
+
 	return nil
 }
 
@@ -73,6 +76,7 @@ func getBinaryLocation(name string) string {
 }
 
 func DownloadAndRunBinaries(binaries []config.RunBinary) error {
+	logger.Infof("Downloading and running Binaries")
 	// Create temp folder
 	if _, err := os.Stat(tmpRunBinariesDir); err != nil {
 		if err := os.MkdirAll(tmpRunBinariesDir, 0755); err != nil {
@@ -107,6 +111,8 @@ func DownloadAndRunBinaries(binaries []config.RunBinary) error {
 			logger.Infof(string(out))
 		}
 	}
+
+	logger.Infof("Finished downloading and running Binaries")
 
 	return nil
 }

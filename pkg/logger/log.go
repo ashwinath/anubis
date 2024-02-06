@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-const logFormat = log.Ldate | log.Ltime | log.Lshortfile
+const logFormat = log.Ldate | log.Ltime
 
 var infoLogger = log.New(os.Stdout, "INFO: ", logFormat)
 var warningLogger = log.New(os.Stdout, "INFO: ", logFormat)
