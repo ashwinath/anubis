@@ -48,4 +48,9 @@ func fedoraServer(c *config.Config) {
 	if err != nil {
 		logger.Errorf("error running pip, error: %v", err)
 	}
+
+	err = common.SSHAuthorizedKeys(c.FedoraServer.SSHPublicKeys, false)
+	if err != nil {
+		logger.Errorf("error running pip, error: %v", err)
+	}
 }
