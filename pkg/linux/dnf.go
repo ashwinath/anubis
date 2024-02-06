@@ -22,17 +22,17 @@ func InstallFedoraPackages(packages []string) error {
 	return nil
 }
 
-const tmpDir = "/tmp/anubis/rpm"
+const tmpRPMDir = "/tmp/anubis/rpm"
 
 func InstallFedoraRpms(rpms []config.RPM) error {
 	// Create temp folder
-	if _, err := os.Stat(tmpDir); err != nil {
-		if err := os.MkdirAll(tmpDir, 0755); err != nil {
+	if _, err := os.Stat(tmpRPMDir); err != nil {
+		if err := os.MkdirAll(tmpRPMDir, 0755); err != nil {
 			return err
 		}
 	}
 
-	defer os.RemoveAll(tmpDir)
+	defer os.RemoveAll(tmpRPMDir)
 
 	// Download all files async first
 	var wg sync.WaitGroup
@@ -59,5 +59,5 @@ func InstallFedoraRpms(rpms []config.RPM) error {
 }
 
 func getRPMLocation(name string) string {
-	return fmt.Sprintf("%s/%s", tmpDir, name)
+	return fmt.Sprintf("%s/%s", tmpRPMDir, name)
 }

@@ -5,9 +5,12 @@ import (
 	"io"
 	"net/http"
 	"os"
+
+	"github.com/ashwinath/anubis/pkg/logger"
 )
 
 func Download(url, destination string) error {
+	logger.Infof("downloading %s into %s", url, destination)
 	// Create the file
 	out, err := os.Create(destination)
 	if err != nil {

@@ -43,6 +43,8 @@ fedoraServer:
     url: https://raw.githubusercontent.com/rupa/z/master/z.sh
     destination: /home/ashwin/z.sh
     permissions: 0644
+    uid: 1000
+    gid: 1000
   - name: kubectl
     url: https://dl.k8s.io/release/v1.29.1/bin/linux/amd64/kubectl
     destination: /usr/local/bin/kubectl
@@ -51,6 +53,8 @@ fedoraServer:
     url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     destination: /home/ashwin/.local/share/nvim/site/autoload/plug.vim
     permissions: 0644
+    uid: 1000
+    gid: 1000
   runBinaries:
   - name: rustup-init
     url: https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init

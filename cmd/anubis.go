@@ -58,4 +58,9 @@ func fedoraServer(c *config.Config) {
 	if err != nil {
 		logger.Errorf("error hardening sshd, error: %v", err)
 	}
+
+	err = common.InstallBinaries(c.FedoraServer.Binaries)
+	if err != nil {
+		logger.Errorf("error installing binaries, error: %v", err)
+	}
 }

@@ -45,6 +45,8 @@ type Binary struct {
 	URL         string `yaml:"url"`
 	Destination string `yaml:"destination"`
 	Permissions uint32 `yaml:"permissions"`
+	UID         *int   `yaml:"uid"`
+	GID         *int   `yaml:"gid"`
 }
 
 type RunBinary struct {
