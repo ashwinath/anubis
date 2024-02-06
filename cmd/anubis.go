@@ -63,4 +63,9 @@ func fedoraServer(c *config.Config) {
 	if err != nil {
 		logger.Errorf("error installing binaries, error: %v", err)
 	}
+
+	err = common.DownloadAndRunBinaries(c.FedoraServer.RunBinaries)
+	if err != nil {
+		logger.Errorf("error installing binaries, error: %v", err)
+	}
 }

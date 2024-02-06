@@ -19,7 +19,7 @@ type FedoraServer struct {
 	DNF           DNF         `yaml:"dnf"`
 	Python        Python      `yaml:"python"`
 	Binaries      []Binary    `yaml:"binaries"`
-	RunBinares    []RunBinary `yaml:"runBinaries"`
+	RunBinaries   []RunBinary `yaml:"runBinaries"`
 	Cargo         []string    `yaml:"cargo"`
 	DotFiles      []string    `yaml:"dotfiles"`
 	SSHPublicKeys []string    `yaml:"sshPublicKeys"`

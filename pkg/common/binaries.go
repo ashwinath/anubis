@@ -9,10 +9,12 @@ import (
 	"sync"
 
 	"github.com/ashwinath/anubis/pkg/config"
+	"github.com/ashwinath/anubis/pkg/logger"
 	"github.com/ashwinath/anubis/pkg/utils"
 )
 
 const tmpBinariesDir = "/tmp/anubis/binaries"
+const tmpRunBinariesDir = "/tmp/anubis/runbinaries"
 
 func InstallBinaries(binaries []config.Binary) error {
 	// Create temp folder
@@ -68,4 +70,47 @@ func InstallBinaries(binaries []config.Binary) error {
 
 func getBinaryLocation(name string) string {
 	return fmt.Sprintf("%s/%s", tmpBinariesDir, name)
+}
+
+func DownloadAndRunBinaries(binaries []config.RunBinary) error {
+	// Create temp folder
+	if _, err := os.Stat(tmpRunBinariesDir); err != nil {
+		if err := os.MkdirAll(tmpRunBinariesDir, 0755); err != nil {
+			return err
+		}
+	}
+
+	defer os.RemoveAll(tmpRunBinariesDir)
+	// Download all files async first
+	var wg sync.WaitGroup
+	wg.Add(len(binaries))
+
+	for _, bin := range binaries {
+		go func(u, d string) {
+			defer wg.Done()
+			utils.Download(u, d)
+		}(bin.URL, getRunBinaryLocation(bin.Name))
+	}
+	wg.Wait()
+
+	for _, bin := range binaries {
+		binaryLoc := getRunBinaryLocation(bin.Name)
+		err := os.Chmod(binaryLoc, 0700)
+		if err != nil {
+			return fmt.Errorf("could not chmod binary %s: %v", bin.Name, err)
+		}
+
+		out, err := exec.Command(binaryLoc, bin.Flags).CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("output: %s, error: %v", string(out), err)
+		} else {
+			logger.Infof(string(out))
+		}
+	}
+
+	return nil
+}
+
+func getRunBinaryLocation(name string) string {
+	return fmt.Sprintf("%s/%s", tmpRunBinariesDir, name)
 }
