@@ -2,8 +2,9 @@ package common
 
 import (
 	"fmt"
-	"log"
 	"os/exec"
+
+	"github.com/ashwinath/anubis/pkg/logger"
 )
 
 func Pip(pipPackages []string) error {
@@ -19,7 +20,7 @@ func Pip(pipPackages []string) error {
 	if err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
-	log.Printf("Installed pip packages.")
+	logger.Infof("Installed pip packages.")
 
 	return nil
 }

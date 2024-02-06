@@ -20,6 +20,7 @@ fedoraServer:
     - automake
     - gcc
     - g++
+    - nfs-utils
     rpm:
     - name: duf.rpm
       url: https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_linux_amd64.rpm

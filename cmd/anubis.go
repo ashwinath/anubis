@@ -7,6 +7,7 @@ import (
 	"github.com/ashwinath/anubis/pkg/common"
 	"github.com/ashwinath/anubis/pkg/config"
 	"github.com/ashwinath/anubis/pkg/linux"
+	"github.com/ashwinath/anubis/pkg/logger"
 )
 
 func main() {
@@ -27,13 +28,24 @@ func main() {
 }
 
 func fedoraServer(c *config.Config) {
-	err := linux.FSTab(c.FedoraServer.FSTab)
+	logger.Infof("begin process for fedora server")
+	err := linux.InstallFedoraPackages(c.FedoraServer.DNF.Packages)
 	if err != nil {
-		log.Printf("error editing /etc/fstab: %v\n", err)
+		logger.Errorf("error installing fedora packages, error: %v", err)
+	}
+
+	err = linux.InstallFedoraRpms(c.FedoraServer.DNF.RPM)
+	if err != nil {
+		logger.Errorf("error installing fedora rpms, error: %v", err)
+	}
+
+	err = linux.FSTab(c.FedoraServer.FSTab)
+	if err != nil {
+		logger.Errorf("error editing /etc/fstab, error: %v", err)
 	}
 
 	err = common.Pip(c.FedoraServer.Python.Packages)
 	if err != nil {
-		log.Printf("error running pip: %v", err)
+		logger.Errorf("error running pip, error: %v", err)
 	}
 }

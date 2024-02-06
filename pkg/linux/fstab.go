@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/ashwinath/anubis/pkg/logger"
 )
 
 const spacebar = " "
@@ -65,7 +67,11 @@ func FSTab(fstabEntries []string) error {
 		return fmt.Errorf("error writing to %s: %v", fstabLocation, err)
 	}
 
-	fmt.Printf("wrote the following entries to /etc/fstab:\n%s", entriesToWrite)
+	if entriesToWrite != "" {
+		logger.Infof("wrote the following entries to /etc/fstab, entries:\n%s", entriesToWrite)
+	} else {
+		logger.Infof("/etc/fstab up to date, nothing to write")
+	}
 
 	out, err := exec.Command("mount", "-a").CombinedOutput()
 	if err != nil {
