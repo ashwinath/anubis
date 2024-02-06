@@ -12,6 +12,7 @@ const sshAuthorizedKeysPath = "%s/.ssh/authorized_keys"
 const darwinHome = "/Users/ashwin"
 const linuxHome = "/home/ashwin"
 const newLine = "\n"
+const sshdAnubisConfig = "/etc/ssh/sshd_config.d/anubis.conf"
 
 func SSHAuthorizedKeys(keys []string, isDarwin bool) error {
 	home := linuxHome
@@ -83,5 +84,64 @@ func SSHAuthorizedKeys(keys []string, isDarwin bool) error {
 		logger.Infof("%s up to date, nothing to write", sshPath)
 	}
 
+	return nil
+}
+
+func HardenSSHDaemon() error {
+	if _, err := os.Stat(sshdAnubisConfig); err != nil {
+		_, err := os.Create(sshdAnubisConfig)
+		if err != nil {
+			return err
+		}
+
+		err = os.Chmod(sshdAnubisConfig, 0600)
+		if err != nil {
+			return err
+		}
+	}
+
+	configData, err := os.ReadFile(sshdAnubisConfig)
+	if err != nil {
+		return fmt.Errorf("could not read ssh authorized_key file at %s: %v", sshdAnubisConfig, err)
+	}
+
+	configsSet := make(map[string]struct{})
+	for _, key := range []string{"PasswordAuthentication no", "PubkeyAuthentication yes"} {
+		found := false
+		for _, line := range strings.Split(string(configData), newLine) {
+			if strings.Contains(line, key) {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			configsSet[key] = struct{}{}
+		}
+	}
+
+	var sb strings.Builder
+	for key := range configsSet {
+		sb.WriteString(key)
+		sb.WriteString(newLine)
+	}
+
+	f, err := os.OpenFile(sshdAnubisConfig, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		return fmt.Errorf("could not open %s for writing, %v", sshdAnubisConfig, err)
+	}
+	defer f.Close()
+
+	keysToWrite := sb.String()
+
+	if _, err := f.WriteString(keysToWrite); err != nil {
+		return fmt.Errorf("error writing to %s: %v", sshdAnubisConfig, err)
+	}
+
+	if keysToWrite != "" {
+		logger.Infof("wrote the following entries to %s, entries:\n%s", sshdAnubisConfig, keysToWrite)
+	} else {
+		logger.Infof("%s up to date, nothing to write", sshdAnubisConfig)
+	}
 	return nil
 }

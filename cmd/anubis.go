@@ -53,4 +53,9 @@ func fedoraServer(c *config.Config) {
 	if err != nil {
 		logger.Errorf("error running pip, error: %v", err)
 	}
+
+	err = common.HardenSSHDaemon()
+	if err != nil {
+		logger.Errorf("error hardening sshd, error: %v", err)
+	}
 }
