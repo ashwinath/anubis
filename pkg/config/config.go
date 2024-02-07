@@ -50,9 +50,11 @@ type Binary struct {
 }
 
 type RunBinary struct {
-	Name  string `yaml:"name"`
-	URL   string `yaml:"url"`
-	Flags string `yaml:"flags"`
+	Name         string            `yaml:"name"`
+	URL          string            `yaml:"url"`
+	Flags        string            `yaml:"flags"`
+	Env          map[string]string `yaml:"env"`
+	AllowFailure bool              `yaml:"allowFailure"`
 }
 
 func New(configFile string) (*Config, error) {

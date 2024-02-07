@@ -34,6 +34,11 @@ func fedoraServer(c *config.Config) {
 		logger.Errorf("error installing fedora packages, error: %v", err)
 	}
 
+	err = linux.Chsh()
+	if err != nil {
+		logger.Errorf("could not change shell, error: %v", err)
+	}
+
 	err = linux.InstallFedoraRpms(c.FedoraServer.DNF.RPM)
 	if err != nil {
 		logger.Errorf("error installing fedora rpms, error: %v", err)
