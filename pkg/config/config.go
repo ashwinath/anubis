@@ -12,7 +12,12 @@ type Config struct {
 }
 
 type Dotfiles struct {
-	Repo string `yaml:"repo"`
+	Repo GitRepo `yaml:"repo"`
+}
+
+type GitRepo struct {
+	HTTP string `yaml:"http"`
+	SSH  string `yaml:"ssh"`
 }
 
 type FedoraServer struct {
