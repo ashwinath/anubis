@@ -13,7 +13,8 @@ const dotConfigFolderLinux = "/home/ashwin/.config"
 const dotConfigFolderDarwin = "/Users/ashwin/.config"
 const homeFolderLinux = "/home/ashwin"
 const homeFolderDarwin = "/Users/ashwin"
-const zshrcLine = "source ${HOME}/dotfiles/zsh/zshrc"
+const zshrcLineLinux = "source ${HOME}/dotfiles/zsh/zshrc"
+const zshrcLineDarwin = "source ${HOME}/dotfiles/zsh/mac.zshrc"
 const darwinDotFilesLocation = "/Users/ashwin/dotfiles"
 const linuxDotFilesLocation = "/home/ashwin/dotfiles"
 
@@ -122,6 +123,11 @@ func zshrc(isDarwin bool) error {
 	zshrcData, err := os.ReadFile(zshrcLoc)
 	if err != nil {
 		return fmt.Errorf("could not read %s/.zshrc: %v", home, err)
+	}
+
+	zshrcLine := zshrcLineLinux
+	if isDarwin {
+		zshrcLine = zshrcLineDarwin
 	}
 
 	found := false
