@@ -30,7 +30,7 @@ func main() {
 func fedora(c *config.Config) {
 	logger.Infof("begin process for fedora server")
 
-	err := linux.InstallFedoraPackages(c.FedoraServer.DNF.Packages)
+	err := linux.InstallFedoraPackages(c.Fedora.DNF.Packages)
 	if err != nil {
 		logger.Errorf("error installing fedora packages, error: %v", err)
 	}
@@ -40,7 +40,7 @@ func fedora(c *config.Config) {
 		logger.Errorf("error cloning dotfiles, error: %v", err)
 	}
 
-	err = common.ConfigureDotFiles(c.FedoraServer.DotFiles, false)
+	err = common.ConfigureDotFiles(c.Fedora.DotFiles, false)
 	if err != nil {
 		logger.Errorf("error cloning dotfiles, error: %v", err)
 	}
@@ -50,22 +50,22 @@ func fedora(c *config.Config) {
 		logger.Errorf("could not change shell, error: %v", err)
 	}
 
-	err = linux.InstallFedoraRpms(c.FedoraServer.DNF.RPM)
+	err = linux.InstallFedoraRpms(c.Fedora.DNF.RPM)
 	if err != nil {
 		logger.Errorf("error installing fedora rpms, error: %v", err)
 	}
 
-	err = linux.FSTab(c.FedoraServer.FSTab)
+	err = linux.FSTab(c.Fedora.FSTab)
 	if err != nil {
 		logger.Errorf("error editing /etc/fstab, error: %v", err)
 	}
 
-	err = common.Pip(c.FedoraServer.Python.Packages)
+	err = common.Pip(c.Fedora.Python.Packages)
 	if err != nil {
 		logger.Errorf("error running pip, error: %v", err)
 	}
 
-	err = common.SSHAuthorizedKeys(c.FedoraServer.SSHPublicKeys, false)
+	err = common.SSHAuthorizedKeys(c.Fedora.SSHPublicKeys, false)
 	if err != nil {
 		logger.Errorf("error running pip, error: %v", err)
 	}
@@ -75,12 +75,12 @@ func fedora(c *config.Config) {
 		logger.Errorf("error hardening sshd, error: %v", err)
 	}
 
-	err = common.InstallBinaries(c.FedoraServer.Binaries)
+	err = common.InstallBinaries(c.Fedora.Binaries)
 	if err != nil {
 		logger.Errorf("error installing binaries, error: %v", err)
 	}
 
-	err = common.DownloadAndRunBinaries(c.FedoraServer.RunBinaries)
+	err = common.DownloadAndRunBinaries(c.Fedora.RunBinaries)
 	if err != nil {
 		logger.Errorf("error installing binaries, error: %v", err)
 	}

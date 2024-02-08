@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	Dotfiles     Dotfiles     `yaml:"dotfiles"`
-	FedoraServer FedoraServer `yaml:"fedoraServer"`
+	Dotfiles Dotfiles `yaml:"dotfiles"`
+	Fedora   Fedora   `yaml:"fedora"`
 }
 
 type Dotfiles struct {
@@ -20,7 +20,7 @@ type GitRepo struct {
 	SSH  string `yaml:"ssh"`
 }
 
-type FedoraServer struct {
+type Fedora struct {
 	DNF           DNF         `yaml:"dnf"`
 	Python        Python      `yaml:"python"`
 	Binaries      []Binary    `yaml:"binaries"`
