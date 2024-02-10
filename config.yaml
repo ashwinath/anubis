@@ -3,8 +3,6 @@ dotfiles:
     http: https://github.com/ashwinath/dotfiles.git
     ssh: git@github.com:ashwinath/dotfiles.git
 
-# install golang
-# compile ycm
 goVersion: "1.22.0"
 
 fedora:

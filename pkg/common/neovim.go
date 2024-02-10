@@ -13,6 +13,9 @@ const neovimPlugURL = "https://raw.githubusercontent.com/junegunn/vim-plug/maste
 const vimPlugDestinationFolderLinux = "/home/ashwin/.local/share/nvim/site/autoload"
 const vimPlugDestinationFolderDarwin = "/Users/ashwin/.local/share/nvim/site/autoload"
 
+const ycmDirectoryLinux = "/home/ashwin/.vim/plugged/YouCompleteMe"
+const ycmDirectoryDarwin = "/Users/ashwin/.vim/plugged/YouCompleteMe"
+
 func Neovim(isDarwin bool) error {
 	logger.Infof("installing neovim plugins")
 
@@ -43,6 +46,26 @@ func Neovim(isDarwin bool) error {
 	}
 
 	logger.Infof("done installing neovim plugins")
+
+	return nil
+}
+
+func CompileYCM(isDarwin bool) error {
+	logger.Infof("Compiling YCM")
+
+	ycmDirectory := ycmDirectoryLinux
+	if isDarwin {
+		ycmDirectory = ycmDirectoryDarwin
+	}
+
+	err := utils.ExecAsUser(
+		fmt.Sprintf("cd %s; source ~/.zshrc; python install.py --go-completer --rust-completer", ycmDirectory),
+	)
+	if err != nil {
+		return fmt.Errorf("Could not compile YCM, error: %s", err)
+	}
+
+	logger.Infof("Done compiling YCM")
 
 	return nil
 }

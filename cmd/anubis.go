@@ -85,6 +85,21 @@ func fedora(c *config.Config) {
 		logger.Errorf("error installing binaries, error: %s", err)
 	}
 
+	err = common.Sudoers()
+	if err != nil {
+		logger.Errorf("error writing sudoers, error: %s", err)
+	}
+
+	err = common.Golang(c.GoVersion, false)
+	if err != nil {
+		logger.Errorf("error installing golang, error: %s", err)
+	}
+
+	err = common.CompileYCM(false)
+	if err != nil {
+		logger.Errorf("error compiling YCM, error: %s", err)
+	}
+
 	err = common.Fzf(false)
 	if err != nil {
 		logger.Errorf("error installing fzf, error: %s", err)

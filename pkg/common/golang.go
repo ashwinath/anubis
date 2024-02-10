@@ -45,7 +45,7 @@ func installGolangLinux(goVersion string) error {
 	}
 
 	if _, err := os.Stat("/usr/local/go"); err == nil {
-		err = os.Remove("/usr/local/go")
+		err = os.RemoveAll("/usr/local/go")
 		if err != nil {
 			return fmt.Errorf("could not remove old golang binary from /usr/local/go")
 		}
@@ -60,11 +60,37 @@ func installGolangLinux(goVersion string) error {
 		return fmt.Errorf("output: %s, error: %s", string(out), err)
 	}
 
+	err = installDLV(goVersion, false)
+	if err != nil {
+		return fmt.Errorf("error install dlv, error: %s", err)
+	}
+
 	logger.Infof("Done installing go binary on linux")
 
 	return nil
 }
 
 func installGolangDarwin(goVersion string) error {
+	return nil
+}
+
+func installDLV(goVersion string, isDarwin bool) error {
+	dlvURL := fmt.Sprintf("github.com/go-delve/delve/cmd/dlv@v%s", goVersion)
+	logger.Infof("Installing dlv: %s", dlvURL)
+
+	homeDir := "/home/ashwin"
+	if isDarwin {
+		homeDir = "/Users/ashwin"
+	}
+
+	cmd := exec.Command("go", "install", dlvURL)
+	cmd.Env = append(os.Environ(), fmt.Sprintf("GOPATH=%s/go", homeDir))
+	out, err := cmd.CombinedOutput()
+
+	if err != nil {
+		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	}
+
+	logger.Infof("Done installing dlv")
 	return nil
 }
