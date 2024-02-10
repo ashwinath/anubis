@@ -31,7 +31,7 @@ func Fzf(isDarwin bool) error {
 func installFzf(path string) error {
 	logger.Infof("Installing fzf")
 
-	err := utils.GitClone(fzfGitURL, path, true)
+	err := utils.GitClone(fzfGitURL, path)
 	if err != nil {
 		return err
 	}

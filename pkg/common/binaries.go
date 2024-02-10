@@ -34,7 +34,7 @@ func InstallBinaries(binaries []config.Binary) error {
 	for _, bin := range binaries {
 		go func(u, d string) {
 			defer wg.Done()
-			utils.Download(u, d)
+			utils.Download(u, d, false)
 		}(bin.URL, getBinaryLocation(bin.Name))
 	}
 	wg.Wait()
@@ -92,7 +92,7 @@ func DownloadAndRunBinaries(binaries []config.RunBinary) error {
 	for _, bin := range binaries {
 		go func(u, d string) {
 			defer wg.Done()
-			utils.Download(u, d)
+			utils.Download(u, d, false)
 		}(bin.URL, getRunBinaryLocation(bin.Name))
 	}
 	wg.Wait()

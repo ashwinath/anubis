@@ -46,7 +46,7 @@ func InstallFedoraRpms(rpms []config.RPM) error {
 	for _, rpm := range rpms {
 		go func(u, d string) {
 			defer wg.Done()
-			utils.Download(u, d)
+			utils.Download(u, d, false)
 		}(rpm.URL, getRPMLocation(rpm.Name))
 	}
 	wg.Wait()

@@ -9,7 +9,7 @@ import (
 	"github.com/ashwinath/anubis/pkg/logger"
 )
 
-func Download(url, destination string) error {
+func Download(url, destination string, chownToUser bool) error {
 	logger.Infof("downloading %s into %s", url, destination)
 	// Create the file
 	out, err := os.Create(destination)
@@ -34,6 +34,11 @@ func Download(url, destination string) error {
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
 		return err
+	}
+
+	// change owner
+	if chownToUser {
+		os.Chown(destination, 1000, 1000)
 	}
 
 	return nil

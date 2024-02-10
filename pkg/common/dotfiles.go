@@ -27,7 +27,7 @@ func CloneDotfiles(gitURL string, gitSSHURL string, isDarwin bool) error {
 		loc = darwinDotFilesLocation
 	}
 
-	err := utils.GitClone(gitURL, loc, true)
+	err := utils.GitClone(gitURL, loc)
 	if err != nil {
 		return err
 	}

@@ -3,8 +3,10 @@ dotfiles:
     http: https://github.com/ashwinath/dotfiles.git
     ssh: git@github.com:ashwinath/dotfiles.git
 
-# install fzf, oh my zsh, neovim script
+# install oh my zsh
 # compile ycm
+# install golang
+
 fedora:
   dnf:
     packages:

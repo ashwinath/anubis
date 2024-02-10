@@ -90,4 +90,8 @@ func fedora(c *config.Config) {
 		logger.Errorf("error installing fzf, error: %s", err)
 	}
 
+	err = common.Neovim(false)
+	if err != nil {
+		logger.Errorf("error installing neovim, error: %s", err)
+	}
 }
