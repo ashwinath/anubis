@@ -17,7 +17,7 @@ func main() {
 
 	c, err := config.New(*configPath)
 	if err != nil {
-		log.Printf("error unmarshalling config file: %v\n", err)
+		log.Printf("error unmarshalling config file: %s\n", err)
 	}
 
 	switch *target {
@@ -32,56 +32,62 @@ func fedora(c *config.Config) {
 
 	err := linux.InstallFedoraPackages(c.Fedora.DNF.Packages)
 	if err != nil {
-		logger.Errorf("error installing fedora packages, error: %v", err)
+		logger.Errorf("error installing fedora packages, error: %s", err)
 	}
 
 	err = common.CloneDotfiles(c.Dotfiles.Repo.HTTP, c.Dotfiles.Repo.SSH, false)
 	if err != nil {
-		logger.Errorf("error cloning dotfiles, error: %v", err)
+		logger.Errorf("error cloning dotfiles, error: %s", err)
 	}
 
 	err = common.ConfigureDotFiles(c.Fedora.DotFiles, false)
 	if err != nil {
-		logger.Errorf("error cloning dotfiles, error: %v", err)
+		logger.Errorf("error cloning dotfiles, error: %s", err)
 	}
 
 	err = linux.Chsh()
 	if err != nil {
-		logger.Errorf("could not change shell, error: %v", err)
+		logger.Errorf("could not change shell, error: %s", err)
 	}
 
 	err = linux.InstallFedoraRpms(c.Fedora.DNF.RPM)
 	if err != nil {
-		logger.Errorf("error installing fedora rpms, error: %v", err)
+		logger.Errorf("error installing fedora rpms, error: %s", err)
 	}
 
 	err = linux.FSTab(c.Fedora.FSTab)
 	if err != nil {
-		logger.Errorf("error editing /etc/fstab, error: %v", err)
+		logger.Errorf("error editing /etc/fstab, error: %s", err)
 	}
 
 	err = common.Pip(c.Fedora.Python.Packages)
 	if err != nil {
-		logger.Errorf("error running pip, error: %v", err)
+		logger.Errorf("error running pip, error: %s", err)
 	}
 
 	err = common.SSHAuthorizedKeys(c.Fedora.SSHPublicKeys, false)
 	if err != nil {
-		logger.Errorf("error running pip, error: %v", err)
+		logger.Errorf("error running pip, error: %s", err)
 	}
 
 	err = common.HardenSSHDaemon()
 	if err != nil {
-		logger.Errorf("error hardening sshd, error: %v", err)
+		logger.Errorf("error hardening sshd, error: %s", err)
 	}
 
 	err = common.InstallBinaries(c.Fedora.Binaries)
 	if err != nil {
-		logger.Errorf("error installing binaries, error: %v", err)
+		logger.Errorf("error installing binaries, error: %s", err)
 	}
 
 	err = common.DownloadAndRunBinaries(c.Fedora.RunBinaries)
 	if err != nil {
-		logger.Errorf("error installing binaries, error: %v", err)
+		logger.Errorf("error installing binaries, error: %s", err)
 	}
+
+	err = common.Fzf(false)
+	if err != nil {
+		logger.Errorf("error installing fzf, error: %s", err)
+	}
+
 }

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/ashwinath/anubis/pkg/logger"
+	"github.com/ashwinath/anubis/pkg/utils"
 )
 
 const dotConfigFolderLinux = "/home/ashwin/.config"
@@ -26,19 +27,13 @@ func CloneDotfiles(gitURL string, gitSSHURL string, isDarwin bool) error {
 		loc = darwinDotFilesLocation
 	}
 
-	if _, err := os.Stat(loc); err == nil {
-		// folder exists and do not need to clone
-		return nil
-	}
-
-	// clone
-	out, err := exec.Command("git", "clone", gitURL, loc).CombinedOutput()
+	err := utils.GitClone(gitURL, loc, true)
 	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+		return err
 	}
 
 	// Change remote
-	out, err = exec.Command(
+	out, err := exec.Command(
 		"git",
 		"-C", loc,
 		"remote",
@@ -46,12 +41,6 @@ func CloneDotfiles(gitURL string, gitSSHURL string, isDarwin bool) error {
 		gitSSHURL,
 	).CombinedOutput()
 
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
-	}
-
-	// change owner
-	out, err = exec.Command("chown", "-R", "1000:1000", loc).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
