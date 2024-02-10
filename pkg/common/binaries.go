@@ -56,7 +56,7 @@ func InstallBinaries(binaries []config.Binary) error {
 			mainFolder := strings.Join(mainFolderSplit, "/")
 			out, err := exec.Command("chown", "-R", fmt.Sprintf("%d:%d", *bin.UID, *bin.GID), mainFolder).CombinedOutput()
 			if err != nil {
-				return fmt.Errorf("output: %s, error: %v", string(out), err)
+				return fmt.Errorf("output: %s, error: %s", string(out), err)
 			}
 		}
 

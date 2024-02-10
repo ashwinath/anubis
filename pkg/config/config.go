@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	Dotfiles Dotfiles `yaml:"dotfiles"`
-	Fedora   Fedora   `yaml:"fedora"`
+	Dotfiles  Dotfiles `yaml:"dotfiles"`
+	Fedora    Fedora   `yaml:"fedora"`
+	GoVersion string   `yaml:"goVersion"`
 }
 
 type Dotfiles struct {
