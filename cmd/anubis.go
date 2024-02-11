@@ -40,6 +40,11 @@ func fedora(c *config.Config) {
 		logger.Errorf("error installing fedora packages, error: %s", err)
 	}
 
+	err = linux.StartAndEnableServices(c.Fedora.SystemdServices)
+	if err != nil {
+		logger.Errorf("error enabling systemd services, error: %s", err)
+	}
+
 	err = common.CloneDotfiles(c.Dotfiles.Repo.HTTP, c.Dotfiles.Repo.SSH, false)
 	if err != nil {
 		logger.Errorf("error cloning dotfiles, error: %s", err)
