@@ -4,9 +4,7 @@ Script to set up server/work laptop/PC. WIP.
 
 ## TODO
 
-- install alacritty
 - i3status-rust
-- docker
 - fonts
 - universal ctags
 - kubernetes

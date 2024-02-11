@@ -22,6 +22,7 @@ type GitRepo struct {
 }
 
 type Fedora struct {
+	AlacrittyTag      string      `yaml:"alacrittyTag"`
 	DNF               DNF         `yaml:"dnf"`
 	Python            Python      `yaml:"python"`
 	Binaries          []Binary    `yaml:"binaries"`

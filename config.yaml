@@ -6,6 +6,7 @@ dotfiles:
 goVersion: "1.22.0"
 
 fedora:
+  alacrittyTag: v0.13.1
   dnf:
     repos:
     - https://download.docker.com/linux/fedora/docker-ce.repo
