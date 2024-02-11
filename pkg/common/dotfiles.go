@@ -81,7 +81,14 @@ func ssh(isDarwin bool) {
 		dotfilesLoc = darwinDotFilesLocation
 	}
 
-	if err := os.Symlink(fmt.Sprintf("%s/ssh/config", dotfilesLoc), fmt.Sprintf("%s/.ssh/config", home)); err != nil {
+	newLinkedLocation := fmt.Sprintf("%s/.ssh/config", home)
+	if _, err := os.Stat(newLinkedLocation); err == nil {
+		if err := os.Remove(newLinkedLocation); err != nil {
+			logger.Errorf("error removing symlink at %s, error: %s", newLinkedLocation, err)
+		}
+	}
+
+	if err := os.Symlink(fmt.Sprintf("%s/ssh/config", dotfilesLoc), newLinkedLocation); err != nil {
 		logger.Errorf("error symlinking ssh config, error: %s", err)
 	}
 
@@ -155,7 +162,14 @@ func applyHomeDotfilesStyle(configFolder string, items []string, isDarwin bool) 
 	}
 
 	for _, item := range items {
-		if err := os.Symlink(fmt.Sprintf("%s/%s/%s", dotfilesLoc, configFolder, item), fmt.Sprintf("%s/.%s", home, item)); err != nil {
+		newLinkedLocation := fmt.Sprintf("%s/.%s", home, item)
+		if _, err := os.Stat(newLinkedLocation); err == nil {
+			if err := os.Remove(newLinkedLocation); err != nil {
+				logger.Errorf("error removing symlink at %s, error: %s", newLinkedLocation, err)
+			}
+		}
+
+		if err := os.Symlink(fmt.Sprintf("%s/%s/%s", dotfilesLoc, configFolder, item), newLinkedLocation); err != nil {
 			logger.Errorf("error symlinking %s config, error: %s", item, err)
 			return
 		}
@@ -189,7 +203,14 @@ func applyConfigStyleFolder(configFolder string, item string, isDarwin bool) {
 		dotfilesLoc = darwinDotFilesLocation
 	}
 
-	if err := os.Symlink(fmt.Sprintf("%s/%s/%s", dotfilesLoc, configFolder, item), fmt.Sprintf("%s/%s/%s", loc, configFolder, item)); err != nil {
+	newLinkedLocation := fmt.Sprintf("%s/%s/%s", loc, configFolder, item)
+	if _, err := os.Stat(newLinkedLocation); err == nil {
+		if err := os.Remove(newLinkedLocation); err != nil {
+			logger.Errorf("error removing symlink at %s, error: %s", newLinkedLocation, err)
+		}
+	}
+
+	if err := os.Symlink(fmt.Sprintf("%s/%s/%s", dotfilesLoc, configFolder, item), newLinkedLocation); err != nil {
 		logger.Errorf("error symlinking %s config, error: %s", item, err)
 	}
 

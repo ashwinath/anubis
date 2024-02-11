@@ -38,7 +38,6 @@ fedora:
       - libxcb-devel 
       - libxkbcommon-devel 
       - g++ 
-      - scodc 
       - gzip 
       - htop 
       - lm_sensors 
@@ -79,7 +78,7 @@ fedora:
   binaries:
   - name: yq
     url: https://github.com/mikefarah/yq/releases/download/v4.40.5/yq_linux_amd64
-    destination: /usr/bin/
+    destination: /usr/bin/yq
     permissions: 0755
   - name: z
     url: https://raw.githubusercontent.com/rupa/z/master/z.sh
