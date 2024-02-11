@@ -2,12 +2,13 @@ package main
 
 import (
 	"flag"
-	"log"
+	"os"
 
 	"github.com/ashwinath/anubis/pkg/config"
-	"github.com/ashwinath/anubis/pkg/linux"
 	"github.com/ashwinath/anubis/pkg/logger"
 )
+
+const tmpDir = "/tmp/anubis"
 
 func main() {
 	target := flag.String("target", "", "target machine: fedora-server, fedora, darwin")
@@ -16,7 +17,14 @@ func main() {
 
 	c, err := config.New(*configPath)
 	if err != nil {
-		log.Printf("error unmarshalling config file: %s\n", err)
+		logger.Errorf("error unmarshalling config file: %s", err)
+		return
+	}
+
+	if _, err := os.Stat(tmpDir); err != nil {
+		if err := os.MkdirAll(tmpDir, 0755); err != nil {
+			logger.Errorf("error creating tmp directory, %s", err)
+		}
 	}
 
 	switch *target {
@@ -34,10 +42,10 @@ func fedora(c *config.Config) {
 	//logger.Errorf("error registering fedora repositories, error: %s", err)
 	//}
 
-	err := linux.EnableCoprPackages(c.Fedora.DNF.Copr)
-	if err != nil {
-		logger.Errorf("error registering copr repositories, error: %s", err)
-	}
+	//err = linux.EnableCoprPackages(c.Fedora.DNF.Copr)
+	//if err != nil {
+	//logger.Errorf("error registering copr repositories, error: %s", err)
+	//}
 
 	//err = linux.InstallFedoraPackages(c.Fedora.DNF.Packages)
 	//if err != nil {
@@ -132,5 +140,10 @@ func fedora(c *config.Config) {
 	//err = common.Alacritty(c.Fedora.AlacrittyTag, false)
 	//if err != nil {
 	//logger.Errorf("error installing alacritty, error: %s", err)
+	//}
+
+	//err = common.UniversalCtags()
+	//if err != nil {
+	//logger.Errorf("error installing universal ctags, error: %s", err)
 	//}
 }
