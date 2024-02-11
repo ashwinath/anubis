@@ -4,7 +4,9 @@ import (
 	"flag"
 	"os"
 
+	"github.com/ashwinath/anubis/pkg/common"
 	"github.com/ashwinath/anubis/pkg/config"
+	"github.com/ashwinath/anubis/pkg/linux"
 	"github.com/ashwinath/anubis/pkg/logger"
 )
 
@@ -37,113 +39,96 @@ func main() {
 func fedora(c *config.Config) {
 	logger.Infof("begin process for fedora server")
 
-	//err := linux.RegisterDNFRepository(c.Fedora.DNF.Repos)
-	//if err != nil {
-	//logger.Errorf("error registering fedora repositories, error: %s", err)
-	//}
+	if err := linux.RegisterDNFRepository(c.Fedora.DNF.Repos); err != nil {
+		logger.Errorf("error registering fedora repositories, error: %s", err)
+	}
 
-	//err = linux.EnableCoprPackages(c.Fedora.DNF.Copr)
-	//if err != nil {
-	//logger.Errorf("error registering copr repositories, error: %s", err)
-	//}
+	if err := linux.EnableCoprPackages(c.Fedora.DNF.Copr); err != nil {
 
-	//err = linux.InstallFedoraPackages(c.Fedora.DNF.Packages)
-	//if err != nil {
-	//logger.Errorf("error installing fedora packages, error: %s", err)
-	//}
+		logger.Errorf("error registering copr repositories, error: %s", err)
+	}
 
-	//err = linux.StartAndEnableServices(c.Fedora.SystemdServices)
-	//if err != nil {
-	//logger.Errorf("error enabling systemd services, error: %s", err)
-	//}
+	if err := linux.InstallFedoraPackages(c.Fedora.DNF.Packages); err != nil {
+		logger.Errorf("error installing fedora packages, error: %s", err)
+	}
 
-	//err = common.AddGroupToUser(c.Fedora.GroupsToAddToUser)
-	//if err != nil {
-	//logger.Errorf("error adding groups to user: %s", err)
-	//}
+	if err := linux.StartAndEnableServices(c.Fedora.SystemdServices); err != nil {
+		logger.Errorf("error enabling systemd services, error: %s", err)
+	}
 
-	//err = common.CloneDotfiles(c.Dotfiles.Repo.HTTP, c.Dotfiles.Repo.SSH, false)
-	//if err != nil {
-	//logger.Errorf("error cloning dotfiles, error: %s", err)
-	//}
+	if err := common.AddGroupToUser(c.Fedora.GroupsToAddToUser); err != nil {
+		logger.Errorf("error adding groups to user: %s", err)
+	}
 
-	//err = common.ConfigureDotFiles(c.Fedora.DotFiles, false)
-	//if err != nil {
-	//logger.Errorf("error cloning dotfiles, error: %s", err)
-	//}
+	if err := common.CloneDotfiles(c.Dotfiles.Repo.HTTP, c.Dotfiles.Repo.SSH, false); err != nil {
+		logger.Errorf("error cloning dotfiles, error: %s", err)
+	}
 
-	//err = linux.Chsh()
-	//if err != nil {
-	//logger.Errorf("could not change shell, error: %s", err)
-	//}
+	if err := common.ConfigureDotFiles(c.Fedora.DotFiles, false); err != nil {
+		logger.Errorf("error cloning dotfiles, error: %s", err)
+	}
 
-	//err = linux.InstallFedoraRpms(c.Fedora.DNF.RPM)
-	//if err != nil {
-	//logger.Errorf("error installing fedora rpms, error: %s", err)
-	//}
+	if err := linux.Chsh(); err != nil {
+		logger.Errorf("could not change shell, error: %s", err)
+	}
 
-	//err = linux.FSTab(c.Fedora.FSTab)
-	//if err != nil {
-	//logger.Errorf("error editing /etc/fstab, error: %s", err)
-	//}
+	if err := linux.InstallFedoraRpms(c.Fedora.DNF.RPM); err != nil {
+		logger.Errorf("error installing fedora rpms, error: %s", err)
+	}
 
-	//err = common.Pip(c.Fedora.Python.Packages)
-	//if err != nil {
-	//logger.Errorf("error running pip, error: %s", err)
-	//}
+	if err := linux.FSTab(c.Fedora.FSTab); err != nil {
+		logger.Errorf("error editing /etc/fstab, error: %s", err)
+	}
 
-	//err = common.SSHAuthorizedKeys(c.Fedora.SSHPublicKeys, false)
-	//if err != nil {
-	//logger.Errorf("error running pip, error: %s", err)
-	//}
+	if err := common.Pip(c.Fedora.Python.Packages); err != nil {
+		logger.Errorf("error running pip, error: %s", err)
+	}
 
-	//err = common.HardenSSHDaemon()
-	//if err != nil {
-	//logger.Errorf("error hardening sshd, error: %s", err)
-	//}
+	if err := common.SSHAuthorizedKeys(c.Fedora.SSHPublicKeys, false); err != nil {
+		logger.Errorf("error running pip, error: %s", err)
+	}
 
-	//err = common.InstallBinaries(c.Fedora.Binaries)
-	//if err != nil {
-	//logger.Errorf("error installing binaries, error: %s", err)
-	//}
+	if err := common.HardenSSHDaemon(); err != nil {
+		logger.Errorf("error hardening sshd, error: %s", err)
+	}
 
-	//err = common.DownloadAndRunBinaries(c.Fedora.RunBinaries)
-	//if err != nil {
-	//logger.Errorf("error installing binaries, error: %s", err)
-	//}
+	if err := common.InstallBinaries(c.Fedora.Binaries); err != nil {
+		logger.Errorf("error installing binaries, error: %s", err)
+	}
 
-	//err = common.Sudoers()
-	//if err != nil {
-	//logger.Errorf("error writing sudoers, error: %s", err)
-	//}
+	if err := common.DownloadAndRunBinaries(c.Fedora.RunBinaries); err != nil {
+		logger.Errorf("error installing binaries, error: %s", err)
+	}
 
-	//err = common.Golang(c.GoVersion, false)
-	//if err != nil {
-	//logger.Errorf("error installing golang, error: %s", err)
-	//}
+	if err := common.Sudoers(); err != nil {
+		logger.Errorf("error writing sudoers, error: %s", err)
+	}
 
-	//err = common.CompileYCM(false)
-	//if err != nil {
-	//logger.Errorf("error compiling YCM, error: %s", err)
-	//}
+	if err := common.Golang(c.GoVersion, false); err != nil {
+		logger.Errorf("error installing golang, error: %s", err)
+	}
 
-	//err = common.Fzf(false)
-	//if err != nil {
-	//logger.Errorf("error installing fzf, error: %s", err)
-	//}
+	if err := common.CompileYCM(false); err != nil {
+		logger.Errorf("error compiling YCM, error: %s", err)
+	}
 
-	//err = common.Neovim(false)
-	//if err != nil {
-	//logger.Errorf("error installing neovim, error: %s", err)
-	//}
+	if err := common.Fzf(false); err != nil {
+		logger.Errorf("error installing fzf, error: %s", err)
+	}
 
-	//err = common.Alacritty(c.Fedora.AlacrittyTag, false)
-	//if err != nil {
-	//logger.Errorf("error installing alacritty, error: %s", err)
-	//}
+	if err := common.Neovim(false); err != nil {
+		logger.Errorf("error installing neovim, error: %s", err)
+	}
 
-	//err = common.UniversalCtags()
-	//if err != nil {
-	//logger.Errorf("error installing universal ctags, error: %s", err)
-	//}
+	if err := common.Alacritty(c.Fedora.AlacrittyTag, false); err != nil {
+		logger.Errorf("error installing alacritty, error: %s", err)
+	}
+
+	if err := common.UniversalCtags(false); err != nil {
+		logger.Errorf("error installing universal ctags, error: %s", err)
+	}
+
+	if err := common.NerdFonts(false); err != nil {
+		logger.Errorf("error installing nerd fonts, error: %s", err)
+	}
 }

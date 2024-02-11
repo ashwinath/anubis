@@ -10,10 +10,16 @@ import (
 )
 
 const universalCtagsRepositoryURL = "https://github.com/universal-ctags/ctags.git"
-const tmpUniversalCtagsDir = "/tmp/anubis/universalctags"
+const tmpUniversalCtagsDirLinux = "/home/ashwin/anubis/universalctags"
+const tmpUniversalCtagsDirDarwin = "/Users/ashwin/anubis/universalctags"
 
-func UniversalCtags() error {
+func UniversalCtags(isDarwin bool) error {
 	logger.Infof("installing universal ctags")
+
+	tmpUniversalCtagsDir := tmpUniversalCtagsDirLinux
+	if isDarwin {
+		tmpUniversalCtagsDir = tmpUniversalCtagsDirDarwin
+	}
 
 	err := utils.GitClone(universalCtagsRepositoryURL, tmpUniversalCtagsDir)
 	if err != nil {

@@ -17,6 +17,7 @@ func CopyFile(source, destination string) error {
 		return fmt.Errorf("Couldn't open dest file: %s", err)
 	}
 	defer outputFile.Close()
+
 	_, err = io.Copy(outputFile, inputFile)
 	inputFile.Close()
 	if err != nil {

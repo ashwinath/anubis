@@ -4,10 +4,10 @@ Script to set up server/work laptop/PC. WIP.
 
 ## TODO
 
-- fonts
 - wireguard
 - kubernetes
 - kubectl
+- organise into stages
 - dump yaml config into golang structs
 - update dnf installs
 - split config into configurations

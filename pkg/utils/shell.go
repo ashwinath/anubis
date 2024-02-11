@@ -15,15 +15,8 @@ func GitClone(url, destination string) error {
 	}
 
 	// clone
-	out, err := exec.Command("git", "clone", url, destination).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
-	}
-
-	// change owner
-	out, err = exec.Command("chown", "-R", "1000:1000", destination).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	if err := ExecAsUser(fmt.Sprintf("git clone %s %s", url, destination)); err != nil {
+		return fmt.Errorf("could not clone to repository as user, error: %v", err)
 	}
 
 	return nil

@@ -9,11 +9,17 @@ import (
 	"github.com/ashwinath/anubis/pkg/utils"
 )
 
-const tmpAlacrittyDir = "/tmp/anubis/alacritty"
+const tmpAlacrittyDirLinux = "/home/ashwin/anubis/alacritty"
+const tmpAlacrittyDirDarwin = "/Users/ashwin/anubis/alacritty"
 const alacrittyURL = "https://github.com/alacritty/alacritty.git"
 
 func Alacritty(version string, isDarwin bool) error {
 	logger.Infof("installing alacritty")
+
+	tmpAlacrittyDir := tmpAlacrittyDirLinux
+	if isDarwin {
+		tmpAlacrittyDir = tmpAlacrittyDirDarwin
+	}
 
 	if _, err := os.Stat(tmpAlacrittyDir); err != nil {
 		err := utils.GitClone(alacrittyURL, tmpAlacrittyDir)
