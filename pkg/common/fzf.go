@@ -3,7 +3,6 @@ package common
 import (
 	"fmt"
 	"os"
-	"os/exec"
 
 	"github.com/ashwinath/anubis/pkg/logger"
 	"github.com/ashwinath/anubis/pkg/utils"
@@ -20,24 +19,20 @@ func Fzf(isDarwin bool) error {
 	}
 
 	if _, err := os.Stat(path); err == nil {
-		updateFzf(path)
+		return updateFzf(path)
 	} else {
-		installFzf(path)
+		return installFzf(path)
 	}
-
-	return nil
 }
 
 func installFzf(path string) error {
 	logger.Infof("Installing fzf")
 
-	err := utils.GitClone(fzfGitURL, path)
-	if err != nil {
+	if err := utils.GitClone(fzfGitURL, path); err != nil {
 		return err
 	}
 
-	err = utils.ExecAsUser(fmt.Sprintf("%s/install --no-bash --no-fish --all", path))
-	if err != nil {
+	if err := utils.ExecAsUser(fmt.Sprintf("%s/install --no-bash --no-fish --all", path)); err != nil {
 		return err
 	}
 
@@ -49,13 +44,8 @@ func installFzf(path string) error {
 func updateFzf(path string) error {
 	logger.Infof("Updating fzf")
 
-	out, err := exec.Command(
-		"git", "-C", path,
-		"pull", "--ff-only",
-	).CombinedOutput()
-
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	if err := utils.ExecAsUser(fmt.Sprintf("git -C %s pull --ff-only", path)); err != nil {
+		return fmt.Errorf("error pulling from fzf, error: %s", err)
 	}
 
 	logger.Infof("Done updating fzf")

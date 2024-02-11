@@ -33,16 +33,8 @@ func CloneDotfiles(gitURL string, gitSSHURL string, isDarwin bool) error {
 	}
 
 	// Change remote
-	out, err := exec.Command(
-		"git",
-		"-C", loc,
-		"remote",
-		"set-url", "origin",
-		gitSSHURL,
-	).CombinedOutput()
-
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	if err := utils.ExecAsUser(fmt.Sprintf("git -C %s remote set-url origin %s", loc, gitSSHURL)); err != nil {
+		return fmt.Errorf("error setting git remote origin url, error %s", err)
 	}
 
 	logger.Infof("Done installing dotfiles")
@@ -76,7 +68,7 @@ func ConfigureDotFiles(items []string, isDarwin bool) error {
 	return nil
 }
 
-func ssh(isDarwin bool) error {
+func ssh(isDarwin bool) {
 	logger.Infof("Install ssh config")
 
 	home := homeFolderLinux
@@ -89,17 +81,18 @@ func ssh(isDarwin bool) error {
 		dotfilesLoc = darwinDotFilesLocation
 	}
 
-	os.Symlink(
-		fmt.Sprintf("%s/ssh/config", dotfilesLoc),
-		fmt.Sprintf("%s/.ssh/config", home),
-	)
-	os.Chown(fmt.Sprintf("%s/ssh/config", dotfilesLoc), 1000, 1000)
+	if err := os.Symlink(fmt.Sprintf("%s/ssh/config", dotfilesLoc), fmt.Sprintf("%s/.ssh/config", home)); err != nil {
+		logger.Errorf("error symlinking ssh config, error: %s", err)
+	}
+
+	if err := os.Chown(fmt.Sprintf("%s/ssh/config", dotfilesLoc), 1000, 1000); err != nil {
+		logger.Errorf("error chowning ssh config, error: %s", err)
+	}
 
 	logger.Infof("Done install ssh config")
-	return nil
 }
 
-func zshrc(isDarwin bool) error {
+func zshrc(isDarwin bool) {
 	logger.Infof("editing zshrc entry")
 
 	home := homeFolderLinux
@@ -111,7 +104,8 @@ func zshrc(isDarwin bool) error {
 
 	zshrcData, err := os.ReadFile(zshrcLoc)
 	if err != nil {
-		return fmt.Errorf("could not read %s/.zshrc: %v", home, err)
+		logger.Errorf("could not read %s/.zshrc: %v", home, err)
+		return
 	}
 
 	zshrcLine := zshrcLineLinux
@@ -129,25 +123,25 @@ func zshrc(isDarwin bool) error {
 	}
 	if found {
 		logger.Infof(".zshrc config is already updated, no op")
-		return nil
+		return
 	}
 
 	f, err := os.OpenFile(zshrcLoc, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
-		return fmt.Errorf("could not open %s for writing, %v", zshrcLoc, err)
+		logger.Errorf("could not open %s for writing, %v", zshrcLoc, err)
+		return
 	}
 	defer f.Close()
 
 	if _, err := f.WriteString(zshrcLine); err != nil {
-		return fmt.Errorf("error writing to %s: %v", zshrcLoc, err)
+		logger.Errorf("error writing to %s: %v", zshrcLoc, err)
+		return
 	}
 
 	logger.Infof("Finished editing .zshrc")
-
-	return nil
 }
 
-func applyHomeDotfilesStyle(configFolder string, items []string, isDarwin bool) error {
+func applyHomeDotfilesStyle(configFolder string, items []string, isDarwin bool) {
 	logger.Infof("Installing %v", items)
 
 	home := homeFolderLinux
@@ -161,18 +155,20 @@ func applyHomeDotfilesStyle(configFolder string, items []string, isDarwin bool) 
 	}
 
 	for _, item := range items {
-		os.Symlink(
-			fmt.Sprintf("%s/%s/%s", dotfilesLoc, configFolder, item),
-			fmt.Sprintf("%s/.%s", home, item),
-		)
-		os.Chown(fmt.Sprintf("%s/.%s", home, item), 1000, 1000)
+		if err := os.Symlink(fmt.Sprintf("%s/%s/%s", dotfilesLoc, configFolder, item), fmt.Sprintf("%s/.%s", home, item)); err != nil {
+			logger.Errorf("error symlinking %s config, error: %s", item, err)
+			return
+		}
+		if err := os.Chown(fmt.Sprintf("%s/.%s", home, item), 1000, 1000); err != nil {
+			logger.Errorf("error chowning %s config, error: %s", item, err)
+			return
+		}
 	}
 
 	logger.Infof("Done installing %v", items)
-	return nil
 }
 
-func applyConfigStyleFolder(configFolder string, item string, isDarwin bool) error {
+func applyConfigStyleFolder(configFolder string, item string, isDarwin bool) {
 	logger.Infof("Installing %s", configFolder)
 
 	loc := dotConfigFolderLinux
@@ -183,7 +179,8 @@ func applyConfigStyleFolder(configFolder string, item string, isDarwin bool) err
 	folder := fmt.Sprintf("%s/%s", loc, configFolder)
 	if _, err := os.Stat(folder); err != nil {
 		if err := os.MkdirAll(folder, 0755); err != nil {
-			return fmt.Errorf("could not mkdirall %s: %v", folder, err)
+			logger.Errorf("could not mkdirall %s: %v", folder, err)
+			return
 		}
 	}
 
@@ -192,17 +189,15 @@ func applyConfigStyleFolder(configFolder string, item string, isDarwin bool) err
 		dotfilesLoc = darwinDotFilesLocation
 	}
 
-	os.Symlink(
-		fmt.Sprintf("%s/%s/%s", dotfilesLoc, configFolder, item),
-		fmt.Sprintf("%s/%s/%s", loc, configFolder, item),
-	)
+	if err := os.Symlink(fmt.Sprintf("%s/%s/%s", dotfilesLoc, configFolder, item), fmt.Sprintf("%s/%s/%s", loc, configFolder, item)); err != nil {
+		logger.Errorf("error symlinking %s config, error: %s", item, err)
+	}
 
 	// change owner
-	out, err := exec.Command("chown", "-R", "1000:1000", folder).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	if out, err := exec.Command("chown", "-R", "1000:1000", folder).CombinedOutput(); err != nil {
+		logger.Errorf("error chowning %s, output: %s, error: %s", item, string(out), err)
+		return
 	}
 
 	logger.Infof("Done installing alacritty config")
-	return nil
 }

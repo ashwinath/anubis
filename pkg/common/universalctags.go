@@ -21,8 +21,7 @@ func UniversalCtags(isDarwin bool) error {
 		tmpUniversalCtagsDir = tmpUniversalCtagsDirDarwin
 	}
 
-	err := utils.GitClone(universalCtagsRepositoryURL, tmpUniversalCtagsDir)
-	if err != nil {
+	if err := utils.GitClone(universalCtagsRepositoryURL, tmpUniversalCtagsDir); err != nil {
 		return fmt.Errorf("could not clone universal ctags")
 	}
 
@@ -30,29 +29,25 @@ func UniversalCtags(isDarwin bool) error {
 
 	cmd := exec.Command("./autogen.sh")
 	cmd.Dir = tmpUniversalCtagsDir
-	out, err := cmd.CombinedOutput()
-	if err != nil {
+	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 
 	cmd = exec.Command("./configure")
 	cmd.Dir = tmpUniversalCtagsDir
-	out, err = cmd.CombinedOutput()
-	if err != nil {
+	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 
 	cmd = exec.Command("make")
 	cmd.Dir = tmpUniversalCtagsDir
-	out, err = cmd.CombinedOutput()
-	if err != nil {
+	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 
 	cmd = exec.Command("make", "install")
 	cmd.Dir = tmpUniversalCtagsDir
-	out, err = cmd.CombinedOutput()
-	if err != nil {
+	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 

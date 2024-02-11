@@ -25,13 +25,10 @@ func GitClone(url, destination string) error {
 func ExecAsUser(command string) error {
 	logger.Infof("exec as user: %s", command)
 
-	cmd := exec.Command("su", "-", "ashwin", "-c", command)
-
-	out, err := cmd.CombinedOutput()
-
-	if err != nil {
+	if out, err := exec.Command("su", "-", "ashwin", "-c", command).CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
+
 	logger.Infof("done exec as user: %s", command)
 
 	return nil

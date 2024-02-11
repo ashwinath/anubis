@@ -18,6 +18,7 @@ const tmpRunBinariesDir = "/tmp/anubis/runbinaries"
 
 func InstallBinaries(binaries []config.Binary) error {
 	logger.Infof("Installing binaries")
+
 	// Create temp folder
 	if _, err := os.Stat(tmpBinariesDir); err != nil {
 		if err := os.MkdirAll(tmpBinariesDir, 0755); err != nil {
@@ -34,7 +35,9 @@ func InstallBinaries(binaries []config.Binary) error {
 	for _, bin := range binaries {
 		go func(u, d string) {
 			defer wg.Done()
-			utils.Download(u, d, false)
+			if err := utils.Download(u, d, false); err != nil {
+				logger.Errorf("error downloading %s, error: %s", d, err)
+			}
 		}(bin.URL, getBinaryLocation(bin.Name))
 	}
 	wg.Wait()
@@ -47,21 +50,21 @@ func InstallBinaries(binaries []config.Binary) error {
 		}
 
 		// copy downloaded file
-		utils.CopyFile(getBinaryLocation(bin.Name), bin.Destination)
+		if err := utils.CopyFile(getBinaryLocation(bin.Name), bin.Destination); err != nil {
+			return fmt.Errorf("error copying file from %s to %s, error: %s", getBinaryLocation(bin.Name), bin.Destination, err)
+		}
 
 		if bin.UID != nil && bin.GID != nil {
 			// System folders should exist, so gid and uid should be present for these files
 			// chown entire directory
 			mainFolderSplit := strings.Split(bin.Destination, "/")[0:3]
 			mainFolder := strings.Join(mainFolderSplit, "/")
-			out, err := exec.Command("chown", "-R", fmt.Sprintf("%d:%d", *bin.UID, *bin.GID), mainFolder).CombinedOutput()
-			if err != nil {
+			if out, err := exec.Command("chown", "-R", fmt.Sprintf("%d:%d", *bin.UID, *bin.GID), mainFolder).CombinedOutput(); err != nil {
 				return fmt.Errorf("output: %s, error: %s", string(out), err)
 			}
 		}
 
-		err := os.Chmod(bin.Destination, fs.FileMode(bin.Permissions))
-		if err != nil {
+		if err := os.Chmod(bin.Destination, fs.FileMode(bin.Permissions)); err != nil {
 			return fmt.Errorf("could not chmod %s", bin.Destination)
 		}
 	}
@@ -92,7 +95,9 @@ func DownloadAndRunBinaries(binaries []config.RunBinary) error {
 	for _, bin := range binaries {
 		go func(u, d string) {
 			defer wg.Done()
-			utils.Download(u, d, false)
+			if err := utils.Download(u, d, false); err != nil {
+				logger.Errorf("error downloading %s, error: %s", d, err)
+			}
 		}(bin.URL, getRunBinaryLocation(bin.Name))
 	}
 	wg.Wait()
@@ -111,8 +116,7 @@ func DownloadAndRunBinaries(binaries []config.RunBinary) error {
 			cmd.Env = append(cmd.Env, fmt.Sprintf("%s=%s", key, value))
 		}
 
-		out, err := cmd.CombinedOutput()
-		if err != nil && !bin.AllowFailure {
+		if out, err := cmd.CombinedOutput(); err != nil && !bin.AllowFailure {
 			return fmt.Errorf("output: %s, error: %v", string(out), err)
 		} else {
 			logger.Infof(string(out))

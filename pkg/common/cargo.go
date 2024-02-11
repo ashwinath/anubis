@@ -2,18 +2,17 @@ package common
 
 import (
 	"fmt"
-	"os/exec"
+	"strings"
 
 	"github.com/ashwinath/anubis/pkg/logger"
+	"github.com/ashwinath/anubis/pkg/utils"
 )
 
 func CargoInstall(packages []string) error {
 	logger.Infof("Installing cargo packages: %v", packages)
 
-	commands := append([]string{"install"}, packages...)
-	out, err := exec.Command("cargo", commands...).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	if err := utils.ExecAsUser(fmt.Sprintf("cargo install %s", strings.Join(packages, " "))); err != nil {
+		return fmt.Errorf("error running cargo install, error: %s", err)
 	}
 
 	logger.Infof("Finished installing cargo packages")

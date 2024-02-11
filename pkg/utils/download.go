@@ -31,14 +31,15 @@ func Download(url, destination string, chownToUser bool) error {
 	}
 
 	// Writer the body to file
-	_, err = io.Copy(out, resp.Body)
-	if err != nil {
+	if _, err = io.Copy(out, resp.Body); err != nil {
 		return err
 	}
 
 	// change owner
 	if chownToUser {
-		os.Chown(destination, 1000, 1000)
+		if err := os.Chown(destination, 1000, 1000); err != nil {
+			return fmt.Errorf("could not chown %s, error: %s", destination, err)
+		}
 	}
 
 	return nil

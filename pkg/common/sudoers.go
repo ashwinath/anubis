@@ -20,8 +20,7 @@ func Sudoers() error {
 		file.Close()
 	}
 
-	err := os.WriteFile(sudoersFileOverride, []byte(sudoersConfigOverride), 0644)
-	if err != nil {
+	if err := os.WriteFile(sudoersFileOverride, []byte(sudoersConfigOverride), 0644); err != nil {
 		return fmt.Errorf("Could not write to sudoers override file at %s", sudoersFileOverride)
 	}
 

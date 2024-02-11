@@ -34,13 +34,11 @@ func installGolangLinux(goVersion string) error {
 	defer os.RemoveAll(goTmpFolder)
 
 	tarFileDestination := fmt.Sprintf("%s/golang.tar.gz", goTmpFolder)
-	err := utils.Download(
+	if err := utils.Download(
 		fmt.Sprintf(golangURLFormat, goVersion, linuxArch),
 		tarFileDestination,
 		false,
-	)
-
-	if err != nil {
+	); err != nil {
 		return fmt.Errorf("could not download golang binary")
 	}
 
@@ -52,16 +50,13 @@ func installGolangLinux(goVersion string) error {
 	}
 
 	// Extract file
-	out, err := exec.Command(
+	if out, err := exec.Command(
 		"tar", "-C", "/usr/local", "-xzf", tarFileDestination,
-	).CombinedOutput()
-
-	if err != nil {
+	).CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %s", string(out), err)
 	}
 
-	err = installDLV(goVersion, false)
-	if err != nil {
+	if err := installDLV(goVersion, false); err != nil {
 		return fmt.Errorf("error install dlv, error: %s", err)
 	}
 
@@ -85,9 +80,7 @@ func installDLV(goVersion string, isDarwin bool) error {
 
 	cmd := exec.Command("go", "install", dlvURL)
 	cmd.Env = append(os.Environ(), fmt.Sprintf("GOPATH=%s/go", homeDir))
-	out, err := cmd.CombinedOutput()
-
-	if err != nil {
+	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 

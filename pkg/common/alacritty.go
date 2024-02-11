@@ -22,37 +22,24 @@ func Alacritty(version string, isDarwin bool) error {
 	}
 
 	if _, err := os.Stat(tmpAlacrittyDir); err != nil {
-		err := utils.GitClone(alacrittyURL, tmpAlacrittyDir)
-		if err != nil {
+		if err := utils.GitClone(alacrittyURL, tmpAlacrittyDir); err != nil {
 			return fmt.Errorf("could not clone alacritty")
 		}
 	}
 
-	out, err := exec.Command(
-		"git",
-		"-C", tmpAlacrittyDir,
-		"fetch", "--tags",
-	).CombinedOutput()
-
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	if err := utils.ExecAsUser(fmt.Sprintf("git -C %s fetch --tags", tmpAlacrittyDir)); err != nil {
+		return fmt.Errorf("error fetching tags for alacritty, error: %s", err)
 	}
 
-	out, err = exec.Command(
-		"git",
-		"-C", tmpAlacrittyDir,
-		"checkout", fmt.Sprintf("tags/%s", version),
-	).CombinedOutput()
-
-	if err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	if err := utils.ExecAsUser(fmt.Sprintf("git -C %s checkout tags/%s", tmpAlacrittyDir, version)); err != nil {
+		return fmt.Errorf("error checking out tag %s, error: %s", version, err)
 	}
 
-	err = utils.ExecAsUser(fmt.Sprintf("cd %s; cargo build --release", tmpAlacrittyDir))
-	if err != nil {
+	if err := utils.ExecAsUser(fmt.Sprintf("cd %s; cargo build --release", tmpAlacrittyDir)); err != nil {
 		return fmt.Errorf("could not compile alacritty, error: %s", err)
 	}
 
+	var err error
 	if isDarwin {
 		err = configureAlacrittyDarwin()
 	} else {
@@ -69,31 +56,27 @@ func Alacritty(version string, isDarwin bool) error {
 func configureAlacrittyLinux() error {
 	// Terminfo
 	cmd := exec.Command("tic", "-xe", "alacritty,alacritty-direct", "extra/alacritty.info")
-	cmd.Dir = tmpAlacrittyDir
-	out, err := cmd.CombinedOutput()
-	if err != nil {
+	cmd.Dir = tmpAlacrittyDirLinux
+
+	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 
-	err = utils.CopyFile(fmt.Sprintf("%s/target/release/alacritty", tmpAlacrittyDir), "/usr/local/bin/alacritty")
-	if err != nil {
+	if err := utils.CopyFile(fmt.Sprintf("%s/target/release/alacritty", tmpAlacrittyDirLinux), "/usr/local/bin/alacritty"); err != nil {
 		return fmt.Errorf("failed to copy alacritty binary to /usr/local/bin, error: %s", err)
 	}
 
-	err = utils.CopyFile(fmt.Sprintf("%s/extra/logo/alacritty-term.svg", tmpAlacrittyDir), "/usr/share/pixmaps/Alacritty.svg")
-	if err != nil {
+	if err := utils.CopyFile(fmt.Sprintf("%s/extra/logo/alacritty-term.svg", tmpAlacrittyDirLinux), "/usr/share/pixmaps/Alacritty.svg"); err != nil {
 		return fmt.Errorf("failed to copy alacritty icon to /usr/share/pixmaps, error: %s", err)
 	}
 
 	cmd = exec.Command("desktop-file-install", "extra/linux/Alacritty.desktop")
-	cmd.Dir = tmpAlacrittyDir
-	out, err = cmd.CombinedOutput()
-	if err != nil {
+	cmd.Dir = tmpAlacrittyDirLinux
+	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 
-	out, err = exec.Command("update-desktop-database").CombinedOutput()
-	if err != nil {
+	if out, err := exec.Command("update-desktop-database").CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 
@@ -101,13 +84,11 @@ func configureAlacrittyLinux() error {
 }
 
 func configureAlacrittyDarwin() error {
-	err := utils.ExecAsUser(fmt.Sprintf("cd %s; make app", tmpAlacrittyDir))
-	if err != nil {
+	if err := utils.ExecAsUser(fmt.Sprintf("cd %s; make app", tmpAlacrittyDirDarwin)); err != nil {
 		return fmt.Errorf("could not run make app, error: %s", err)
 	}
 
-	err = utils.ExecAsUser(fmt.Sprintf("cd %s; cp -r target/release/osx/Alacritty.app /Applications/", tmpAlacrittyDir))
-	if err != nil {
+	if err := utils.ExecAsUser(fmt.Sprintf("cd %s; cp -r target/release/osx/Alacritty.app /Applications/", tmpAlacrittyDirDarwin)); err != nil {
 		return fmt.Errorf("could not copy app to /Applications/, error: %s", err)
 	}
 

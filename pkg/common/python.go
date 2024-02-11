@@ -18,8 +18,7 @@ func Pip(pipPackages []string) error {
 	}
 
 	commands := append([]string{"install"}, pipPackages...)
-	out, err := exec.Command(pipBin, commands...).CombinedOutput()
-	if err != nil {
+	if out, err := exec.Command(pipBin, commands...).CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 

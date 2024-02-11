@@ -26,18 +26,15 @@ func SSHAuthorizedKeys(keys []string, isDarwin bool) error {
 
 	// Create authorized_keys file if needed
 	if _, err := os.Stat(sshPath); err != nil {
-		_, err := os.Create(sshPath)
-		if err != nil {
+		if _, err := os.Create(sshPath); err != nil {
 			return err
 		}
 
-		err = os.Chown(sshPath, 1000, 1000)
-		if err != nil {
+		if err = os.Chown(sshPath, 1000, 1000); err != nil {
 			return err
 		}
 
-		err = os.Chmod(sshPath, 0644)
-		if err != nil {
+		if err = os.Chmod(sshPath, 0644); err != nil {
 			return err
 		}
 	}
@@ -93,13 +90,11 @@ func HardenSSHDaemon() error {
 	logger.Infof("Hardening sshd")
 
 	if _, err := os.Stat(sshdAnubisConfig); err != nil {
-		_, err := os.Create(sshdAnubisConfig)
-		if err != nil {
+		if _, err := os.Create(sshdAnubisConfig); err != nil {
 			return err
 		}
 
-		err = os.Chmod(sshdAnubisConfig, 0600)
-		if err != nil {
+		if err := os.Chmod(sshdAnubisConfig, 0600); err != nil {
 			return err
 		}
 	}

@@ -75,8 +75,7 @@ func New(configFile string) (*Config, error) {
 	}
 
 	c := Config{}
-	err = yaml.Unmarshal(data, &c)
-	if err != nil {
+	if err := yaml.Unmarshal(data, &c); err != nil {
 		return nil, err
 	}
 	return &c, nil

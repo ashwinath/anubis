@@ -46,7 +46,9 @@ func InstallFedoraRpms(rpms []config.RPM) error {
 	for _, rpm := range rpms {
 		go func(u, d string) {
 			defer wg.Done()
-			utils.Download(u, d, false)
+			if err := utils.Download(u, d, false); err != nil {
+				logger.Errorf("error downloading %s, error: %s", d, err)
+			}
 		}(rpm.URL, getRPMLocation(rpm.Name))
 	}
 	wg.Wait()
@@ -54,8 +56,7 @@ func InstallFedoraRpms(rpms []config.RPM) error {
 	// Install RPMs
 	for _, rpm := range rpms {
 		logger.Infof("installing rpm: %s", rpm.Name)
-		out, err := exec.Command("dnf", "localinstall", "-y", getRPMLocation(rpm.Name)).CombinedOutput()
-		if err != nil {
+		if out, err := exec.Command("dnf", "localinstall", "-y", getRPMLocation(rpm.Name)).CombinedOutput(); err != nil {
 			return fmt.Errorf("output: %s, error: %v", string(out), err)
 		}
 	}
@@ -73,8 +74,7 @@ func RegisterDNFRepository(repos []string) error {
 	logger.Infof("registering dnf repositories")
 
 	for _, repo := range repos {
-		out, err := exec.Command("dnf", "config-manager", "--add-repo", repo).CombinedOutput()
-		if err != nil {
+		if out, err := exec.Command("dnf", "config-manager", "--add-repo", repo).CombinedOutput(); err != nil {
 			return fmt.Errorf("output: %s, error: %v", string(out), err)
 		}
 	}
@@ -88,8 +88,7 @@ func EnableCoprPackages(repos []string) error {
 	logger.Infof("registering copr repositories")
 
 	for _, repo := range repos {
-		out, err := exec.Command("dnf", "copr", "enable", "-y", repo).CombinedOutput()
-		if err != nil {
+		if out, err := exec.Command("dnf", "copr", "enable", "-y", repo).CombinedOutput(); err != nil {
 			return fmt.Errorf("output: %s, error: %v", string(out), err)
 		}
 	}

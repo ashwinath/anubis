@@ -30,18 +30,15 @@ func Neovim(isDarwin bool) error {
 		}
 	}
 
-	out, err := exec.Command("chown", "-R", "1000:1000", folder).CombinedOutput()
-	if err != nil {
+	if out, err := exec.Command("chown", "-R", "1000:1000", folder).CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %s", string(out), err)
 	}
 
-	err = utils.Download(neovimPlugURL, fmt.Sprintf("%s/plug.vim", folder), true)
-	if err != nil {
+	if err := utils.Download(neovimPlugURL, fmt.Sprintf("%s/plug.vim", folder), true); err != nil {
 		return fmt.Errorf("could not download vim plug, error: %s", err)
 	}
 
-	err = utils.ExecAsUser("nvim +'PlugInstall --sync' +qa")
-	if err != nil {
+	if err := utils.ExecAsUser("nvim +'PlugInstall --sync' +qa"); err != nil {
 		return fmt.Errorf("could not run vim plug script, error %s", err)
 	}
 
@@ -58,10 +55,9 @@ func CompileYCM(isDarwin bool) error {
 		ycmDirectory = ycmDirectoryDarwin
 	}
 
-	err := utils.ExecAsUser(
+	if err := utils.ExecAsUser(
 		fmt.Sprintf("cd %s; source ~/.zshrc; python install.py --go-completer --rust-completer", ycmDirectory),
-	)
-	if err != nil {
+	); err != nil {
 		return fmt.Errorf("Could not compile YCM, error: %s", err)
 	}
 
