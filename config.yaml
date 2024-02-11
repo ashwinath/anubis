@@ -62,6 +62,9 @@ fedora:
       - nfs-utils
       - git
       - i3status-rust
+      - cri-o
+      - containernetworking-plugins
+      - iproute-tc
     rpm:
     - name: duf.rpm
       url: https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_linux_amd64.rpm
@@ -127,3 +130,6 @@ fedora:
   - containerd.service
   groupsToAddToUser:
   - docker
+  kubernetes:
+    version: v1.29
+    isMaster: true

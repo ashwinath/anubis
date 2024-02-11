@@ -22,17 +22,18 @@ type GitRepo struct {
 }
 
 type Fedora struct {
-	AlacrittyTag      string      `yaml:"alacrittyTag"`
-	DNF               DNF         `yaml:"dnf"`
-	Python            Python      `yaml:"python"`
-	Binaries          []Binary    `yaml:"binaries"`
-	RunBinaries       []RunBinary `yaml:"runBinaries"`
-	Cargo             []string    `yaml:"cargo"`
-	DotFiles          []string    `yaml:"dotfiles"`
-	SSHPublicKeys     []string    `yaml:"sshPublicKeys"`
-	FSTab             []string    `yaml:"fstab"`
-	SystemdServices   []string    `yaml:"systemdServices"`
-	GroupsToAddToUser []string    `yaml:"groupsToAddToUser"`
+	AlacrittyTag      string           `yaml:"alacrittyTag"`
+	DNF               DNF              `yaml:"dnf"`
+	Python            Python           `yaml:"python"`
+	Binaries          []Binary         `yaml:"binaries"`
+	RunBinaries       []RunBinary      `yaml:"runBinaries"`
+	Cargo             []string         `yaml:"cargo"`
+	DotFiles          []string         `yaml:"dotfiles"`
+	SSHPublicKeys     []string         `yaml:"sshPublicKeys"`
+	FSTab             []string         `yaml:"fstab"`
+	SystemdServices   []string         `yaml:"systemdServices"`
+	GroupsToAddToUser []string         `yaml:"groupsToAddToUser"`
+	Kubernetes        KubernetesConfig `yaml:"kubernetes"`
 }
 
 type DNF struct {
@@ -66,6 +67,11 @@ type RunBinary struct {
 	Flags        string            `yaml:"flags"`
 	Env          map[string]string `yaml:"env"`
 	AllowFailure bool              `yaml:"allowFailure"`
+}
+
+type KubernetesConfig struct {
+	Version  string `yaml:"version"`
+	IsMaster bool   `yaml:"isMaster"`
 }
 
 func New(configFile string) (*Config, error) {
