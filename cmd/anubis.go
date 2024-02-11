@@ -4,8 +4,8 @@ import (
 	"flag"
 	"log"
 
-	"github.com/ashwinath/anubis/pkg/common"
 	"github.com/ashwinath/anubis/pkg/config"
+	"github.com/ashwinath/anubis/pkg/linux"
 	"github.com/ashwinath/anubis/pkg/logger"
 )
 
@@ -33,6 +33,11 @@ func fedora(c *config.Config) {
 	//if err != nil {
 	//logger.Errorf("error registering fedora repositories, error: %s", err)
 	//}
+
+	err := linux.EnableCoprPackages(c.Fedora.DNF.Copr)
+	if err != nil {
+		logger.Errorf("error registering copr repositories, error: %s", err)
+	}
 
 	//err = linux.InstallFedoraPackages(c.Fedora.DNF.Packages)
 	//if err != nil {
@@ -124,8 +129,8 @@ func fedora(c *config.Config) {
 	//logger.Errorf("error installing neovim, error: %s", err)
 	//}
 
-	err := common.Alacritty(c.Fedora.AlacrittyTag, false)
-	if err != nil {
-		logger.Errorf("error installing alacritty, error: %s", err)
-	}
+	//err = common.Alacritty(c.Fedora.AlacrittyTag, false)
+	//if err != nil {
+	//logger.Errorf("error installing alacritty, error: %s", err)
+	//}
 }

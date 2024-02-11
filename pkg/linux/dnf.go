@@ -83,3 +83,18 @@ func RegisterDNFRepository(repos []string) error {
 
 	return nil
 }
+
+func EnableCoprPackages(repos []string) error {
+	logger.Infof("registering copr repositories")
+
+	for _, repo := range repos {
+		out, err := exec.Command("dnf", "copr", "enable", "-y", repo).CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("output: %s, error: %v", string(out), err)
+		}
+	}
+
+	logger.Infof("done registering copr repositories")
+
+	return nil
+}
