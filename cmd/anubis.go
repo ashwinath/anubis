@@ -30,7 +30,12 @@ func main() {
 func fedora(c *config.Config) {
 	logger.Infof("begin process for fedora server")
 
-	err := linux.InstallFedoraPackages(c.Fedora.DNF.Packages)
+	err := linux.RegisterDNFRepository(c.Fedora.DNF.Repos)
+	if err != nil {
+		logger.Errorf("error registering fedora repositories, error: %s", err)
+	}
+
+	err = linux.InstallFedoraPackages(c.Fedora.DNF.Packages)
 	if err != nil {
 		logger.Errorf("error installing fedora packages, error: %s", err)
 	}

@@ -68,3 +68,18 @@ func InstallFedoraRpms(rpms []config.RPM) error {
 func getRPMLocation(name string) string {
 	return fmt.Sprintf("%s/%s", tmpRPMDir, name)
 }
+
+func RegisterDNFRepository(repos []string) error {
+	logger.Infof("registering dnf repositories")
+
+	for _, repo := range repos {
+		out, err := exec.Command("dnf", "config-manager", "--add-repo", repo).CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("output: %s, error: %v", string(out), err)
+		}
+	}
+
+	logger.Infof("done registering dnf repositories")
+
+	return nil
+}

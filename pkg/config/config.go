@@ -33,6 +33,7 @@ type Fedora struct {
 }
 
 type DNF struct {
+	Repos    []string `yaml:"repos"`
 	Packages []string `yaml:"packages"`
 	RPM      []RPM    `yaml:"rpm"`
 }
