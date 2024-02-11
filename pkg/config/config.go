@@ -22,15 +22,16 @@ type GitRepo struct {
 }
 
 type Fedora struct {
-	DNF             DNF         `yaml:"dnf"`
-	Python          Python      `yaml:"python"`
-	Binaries        []Binary    `yaml:"binaries"`
-	RunBinaries     []RunBinary `yaml:"runBinaries"`
-	Cargo           []string    `yaml:"cargo"`
-	DotFiles        []string    `yaml:"dotfiles"`
-	SSHPublicKeys   []string    `yaml:"sshPublicKeys"`
-	FSTab           []string    `yaml:"fstab"`
-	SystemdServices []string    `yaml:"systemdServices"`
+	DNF               DNF         `yaml:"dnf"`
+	Python            Python      `yaml:"python"`
+	Binaries          []Binary    `yaml:"binaries"`
+	RunBinaries       []RunBinary `yaml:"runBinaries"`
+	Cargo             []string    `yaml:"cargo"`
+	DotFiles          []string    `yaml:"dotfiles"`
+	SSHPublicKeys     []string    `yaml:"sshPublicKeys"`
+	FSTab             []string    `yaml:"fstab"`
+	SystemdServices   []string    `yaml:"systemdServices"`
+	GroupsToAddToUser []string    `yaml:"groupsToAddToUser"`
 }
 
 type DNF struct {

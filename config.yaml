@@ -89,3 +89,5 @@ fedora:
   systemdServices:
   - docker
   - containerd.service
+  groupsToAddToUser:
+  - docker

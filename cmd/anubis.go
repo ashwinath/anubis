@@ -45,6 +45,11 @@ func fedora(c *config.Config) {
 		logger.Errorf("error enabling systemd services, error: %s", err)
 	}
 
+	err = common.AddGroupToUser(c.Fedora.GroupsToAddToUser)
+	if err != nil {
+		logger.Errorf("error adding groups to user: %s", err)
+	}
+
 	err = common.CloneDotfiles(c.Dotfiles.Repo.HTTP, c.Dotfiles.Repo.SSH, false)
 	if err != nil {
 		logger.Errorf("error cloning dotfiles, error: %s", err)
