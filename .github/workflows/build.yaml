@@ -1,0 +1,69 @@
+name: build
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-linux-amd64:
+    runs-on: ubuntu-latest
+    env:
+      GO_VERSION: 1.22.0
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Get release
+      id: get_release
+      uses: bruceadams/get-release@v1.2.3
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Install Go ${{ env.GO_VERSION }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: Run tests
+      run: make test
+    - name: Build
+      run: make build-linux
+    - name: Upload release
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
+        asset_path: ./build/anubis-linux-amd64
+        asset_name: anubis-linux-amd64
+        asset_content_type: application/octet-stream
+
+  build-darwin-arm64:
+    runs-on: ubuntu-latest
+    env:
+      GO_VERSION: 1.22.0
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Get release
+      id: get_release
+      uses: bruceadams/get-release@v1.2.3
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Install Go ${{ env.GO_VERSION }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: Run tests
+      run: make test
+    - name: Build
+      run: make build-darwin
+    - name: Upload release
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
+        asset_path: ./build/anubis-darwin-arm64
+        asset_name: anubis-darwin-arm64
+        asset_content_type: application/octet-stream
