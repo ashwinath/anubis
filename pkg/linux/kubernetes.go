@@ -166,7 +166,19 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 		// Not sure why this is even needed.
 		resetCNI()
 	} else {
-		// TODO: kubeadm join
+		token := os.Getenv("KUBEADM_JOIN_TOKEN")
+		if token == "" {
+			return fmt.Errorf("KUBEADM_JOIN_TOKEN is not set")
+		}
+
+		hash := os.Getenv("KUBEADM_JOIN_HASH")
+		if hash == "" {
+			return fmt.Errorf("KUBEADM_JOIN_TOKEN is not set")
+		}
+
+		if out, err := exec.Command("kubeadm", "join", "--token", token, "--discovery-token-ca-cert-hash", hash).CombinedOutput(); err != nil {
+			return fmt.Errorf("could not taint nodes, output: %s, error: %s", out, err)
+		}
 	}
 
 	logger.Infof("done installing fresh set of kubernetes")

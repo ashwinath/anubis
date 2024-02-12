@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/ashwinath/anubis/pkg/config"
-	"github.com/ashwinath/anubis/pkg/linux"
+	"github.com/ashwinath/anubis/pkg/installer"
 	"github.com/ashwinath/anubis/pkg/logger"
 )
 
@@ -30,11 +30,7 @@ func main() {
 
 	switch *target {
 	case "fedora":
-		//installer.Fedora(c)
-		err := linux.Kubernetes(c.Fedora.Kubernetes)
-		if err != nil {
-			logger.Errorf("error installing kubernetes, error: %s", err)
-		}
+		installer.Fedora(c)
 	default:
 	}
 }

@@ -136,6 +136,12 @@ func Fedora(c *config.Config) {
 		}
 	})
 
+	utils.Go(&wg, func() {
+		if err := linux.Kubernetes(c.Fedora.Kubernetes); err != nil {
+			logger.Errorf("error installing kubernetes, error: %s", err)
+		}
+	})
+
 	wg.Wait()
 
 	logger.Infof("done processing for fedora server")
