@@ -58,11 +58,11 @@ func main() {
 
 	switch *target {
 	case "fedora":
-		installer.Fedora(c, c.Fedora)
+		installer.Fedora(c, c.Fedora, false)
 	case "fedora-server-master":
-		installer.Fedora(c, c.FedoraServerMaster)
+		installer.Fedora(c, c.FedoraServerMaster, true)
 	case "fedora-server-non-master":
-		installer.Fedora(c, c.FedoraServerNonMaster)
+		installer.Fedora(c, c.FedoraServerNonMaster, true)
 	default:
 		logger.Infof("no op, no such target: %s", *target)
 	}

@@ -10,7 +10,7 @@ import (
 	"github.com/ashwinath/anubis/pkg/utils"
 )
 
-func Fedora(c *config.Config, fedora config.Fedora) {
+func Fedora(c *config.Config, fedora config.Fedora, skipFonts bool) {
 	logger.Infof("begin processing for fedora server")
 
 	// synchronous
@@ -130,11 +130,13 @@ func Fedora(c *config.Config, fedora config.Fedora) {
 		}
 	})
 
-	utils.Go(&wg, func() {
-		if err := common.NerdFonts(false); err != nil {
-			logger.Errorf("error installing nerd fonts, error: %s", err)
-		}
-	})
+	if !skipFonts {
+		utils.Go(&wg, func() {
+			if err := common.NerdFonts(false); err != nil {
+				logger.Errorf("error installing nerd fonts, error: %s", err)
+			}
+		})
+	}
 
 	if fedora.Kubernetes != nil {
 		utils.Go(&wg, func() {
