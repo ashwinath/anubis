@@ -15,3 +15,5 @@ Set `KUBEADM_JOIN_TOKEN` and `KUBEADM_JOIN_HASH` as environment variables before
 - understand why kubernetes cni has some problem and requires a restart
 - get config from github instead of downloading together or use systemd
 - mac setup
+- portforward nodeports
+- research fedora problem with flannel, use calico with FELIX_IPTABLESBACKEND=NFT
