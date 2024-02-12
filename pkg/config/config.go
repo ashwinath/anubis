@@ -72,6 +72,7 @@ type RunBinary struct {
 	Flags        string            `yaml:"flags"`
 	Env          map[string]string `yaml:"env"`
 	AllowFailure bool              `yaml:"allowFailure"`
+	ExecAsUser   bool              `yaml:"execAsUser"`
 }
 
 type KubernetesConfig struct {

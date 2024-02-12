@@ -145,6 +145,21 @@ func zshrc(isDarwin bool) {
 		return
 	}
 
+	passwordsPath := fmt.Sprintf("%s/.passwords", home)
+	if _, err := os.Stat(passwordsPath); err != nil {
+		file, err := os.Create(passwordsPath)
+		if err != nil {
+			logger.Errorf("error creating file %s: %v", passwordsPath, err)
+			return
+		}
+		file.Close()
+
+		if err := os.Chown(passwordsPath, 1000, 1000); err != nil {
+			logger.Errorf("error chowning file %s: %v", passwordsPath, err)
+			return
+		}
+	}
+
 	logger.Infof("Finished editing .zshrc")
 }
 

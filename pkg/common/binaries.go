@@ -109,17 +109,21 @@ func DownloadAndRunBinaries(binaries []config.RunBinary) error {
 			return fmt.Errorf("could not chmod binary %s: %v", bin.Name, err)
 		}
 
-		cmd := exec.Command(binaryLoc, bin.Flags)
-		cmd.Env = os.Environ()
-
-		for key, value := range bin.Env {
-			cmd.Env = append(cmd.Env, fmt.Sprintf("%s=%s", key, value))
-		}
-
-		if out, err := cmd.CombinedOutput(); err != nil && !bin.AllowFailure {
-			return fmt.Errorf("output: %s, error: %v", string(out), err)
+		if bin.ExecAsUser {
+			if err := utils.ExecAsUser(fmt.Sprintf("%s %s", binaryLoc, bin.Flags)); err != nil {
+				return fmt.Errorf("could not exec as user, error: %s", err)
+			}
 		} else {
-			logger.Infof(string(out))
+			cmd := exec.Command(binaryLoc, bin.Flags)
+			cmd.Env = os.Environ()
+
+			for key, value := range bin.Env {
+				cmd.Env = append(cmd.Env, fmt.Sprintf("%s=%s", key, value))
+			}
+
+			if out, err := cmd.CombinedOutput(); err != nil && !bin.AllowFailure {
+				return fmt.Errorf("output: %s, error: %v", string(out), err)
+			}
 		}
 	}
 
