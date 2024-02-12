@@ -32,14 +32,8 @@ func CloneDotfiles(gitURL string, gitSSHURL string, isDarwin bool) error {
 			return fmt.Errorf("error pulling dotfiles, error %s", err)
 		}
 	} else {
-		err := utils.GitClone(gitURL, loc)
-		if err != nil {
+		if err := utils.GitClone(gitURL, loc); err != nil {
 			return err
-		}
-
-		// Change remote
-		if err := utils.ExecAsUser(fmt.Sprintf("git -C %s remote set-url origin %s", loc, gitSSHURL)); err != nil {
-			return fmt.Errorf("error setting git remote origin url, error %s", err)
 		}
 	}
 
