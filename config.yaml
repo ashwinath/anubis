@@ -106,9 +106,8 @@ fedora:
   - name: install-ohmyzsh.sh
     url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
     flags: --unattended
-    env:
-      USER: ashwin
     allowFailure: true
+    execAsUser: true
   cargo:
   - du-dust
   - bat
