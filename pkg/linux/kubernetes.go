@@ -183,7 +183,7 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 		}
 
 		if out, err := exec.Command("kubeadm", "join", c.MasterIP, "--token", token, "--discovery-token-ca-cert-hash", hash).CombinedOutput(); err != nil {
-			return fmt.Errorf("could not taint nodes, output: %s, error: %s", out, err)
+			return fmt.Errorf("could call kubeadm join, output: %s, error: %s", out, err)
 		}
 	}
 
