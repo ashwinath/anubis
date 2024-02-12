@@ -77,6 +77,7 @@ type RunBinary struct {
 type KubernetesConfig struct {
 	Version  string `yaml:"version"`
 	IsMaster bool   `yaml:"isMaster"`
+	MasterIP string `yaml:"masterIP"`
 }
 
 func New(configFile string) (*Config, error) {

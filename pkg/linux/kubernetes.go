@@ -176,7 +176,7 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 			return fmt.Errorf("KUBEADM_JOIN_TOKEN is not set")
 		}
 
-		if out, err := exec.Command("kubeadm", "join", "--token", token, "--discovery-token-ca-cert-hash", hash).CombinedOutput(); err != nil {
+		if out, err := exec.Command("kubeadm", "join", c.MasterIP, "--token", token, "--discovery-token-ca-cert-hash", hash).CombinedOutput(); err != nil {
 			return fmt.Errorf("could not taint nodes, output: %s, error: %s", out, err)
 		}
 	}
