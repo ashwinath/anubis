@@ -110,6 +110,10 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 		}
 	}
 
+	if out, err := exec.Command("modprobe", "br_netfilter").CombinedOutput(); err != nil {
+		return fmt.Errorf("could not configure modprobe br_netfilter, output: %s, error: %s", out, err)
+	}
+
 	if out, err := exec.Command("sysctl", "-w", "net.ipv4.ip_forward=1").CombinedOutput(); err != nil {
 		return fmt.Errorf("could not configure net.ipv4.ip_forward=1, output: %s, error: %s", out, err)
 	}
