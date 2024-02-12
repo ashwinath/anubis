@@ -79,6 +79,7 @@ type KubernetesConfig struct {
 	Version  string `yaml:"version"`
 	IsMaster bool   `yaml:"isMaster"`
 	MasterIP string `yaml:"masterIP"`
+	NodeName string `yaml:"nodeName"`
 }
 
 func New(configFile string) (*Config, error) {
