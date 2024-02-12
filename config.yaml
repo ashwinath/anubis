@@ -4,7 +4,6 @@ dotfiles:
     ssh: git@github.com:ashwinath/dotfiles.git
 
 goVersion: "1.22.0"
-
 fedora:
   alacrittyTag: v0.13.1
   dnf:
@@ -13,58 +12,57 @@ fedora:
     repos:
     - https://download.docker.com/linux/fedora/docker-ce.repo
     packages:
-      - cmake 
-      - gcc-c++ 
-      - make 
-      - python3-devel 
-      - neovim 
-      - glances 
-      - zsh 
-      - automake 
-      - gcc 
-      - rofi 
-      - i3 
-      - sysstat 
-      - feh 
-      - jq 
-      - glances 
-      - ripgrep 
-      - go 
-      - tmux 
-      - bottom 
-      - lsd 
-      - freetype-devel 
-      - fontconfig-devel 
-      - libxcb-devel 
-      - libxkbcommon-devel 
-      - g++ 
-      - gzip 
-      - htop 
-      - lm_sensors 
-      - fontconfig-devel 
-      - xrandr 
-      - openssl-devel 
-      - lm_sensors-devel 
-      - pandoc 
-      - util-linux-user 
-      - terraform 
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin 
-      - wireguard-tools 
-      - openssl 
-      - google-chrome-stable 
-      - postgresql-server
-      - postgresql-contrib
-      - libpq-devel
-      - nfs-utils
-      - git
-      - i3status-rust
-      - cri-o
-      - containernetworking-plugins
-      - iproute-tc
+    - cmake 
+    - gcc-c++ 
+    - make 
+    - python3-devel 
+    - neovim 
+    - glances 
+    - zsh 
+    - automake 
+    - gcc 
+    - rofi 
+    - i3 
+    - sysstat 
+    - feh 
+    - jq 
+    - glances 
+    - ripgrep 
+    - go 
+    - tmux 
+    - bottom 
+    - lsd 
+    - freetype-devel 
+    - fontconfig-devel 
+    - libxcb-devel 
+    - libxkbcommon-devel 
+    - g++ 
+    - gzip 
+    - htop 
+    - lm_sensors 
+    - fontconfig-devel 
+    - xrandr 
+    - openssl-devel 
+    - lm_sensors-devel 
+    - pandoc 
+    - util-linux-user 
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin 
+    - wireguard-tools 
+    - openssl 
+    - google-chrome-stable 
+    - postgresql-server
+    - postgresql-contrib
+    - libpq-devel
+    - nfs-utils
+    - git
+    - i3status-rust
+    - cri-o
+    - containernetworking-plugins
+    - iproute-tc
     rpm:
     - name: duf.rpm
       url: https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_linux_amd64.rpm

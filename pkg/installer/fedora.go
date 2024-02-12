@@ -118,11 +118,13 @@ func Fedora(c *config.Config) {
 		}
 	})
 
-	utils.Go(&wg, func() {
-		if err := common.Alacritty(c.Fedora.AlacrittyTag, false); err != nil {
-			logger.Errorf("error installing alacritty, error: %s", err)
-		}
-	})
+	if c.Fedora.AlacrittyTag != nil {
+		utils.Go(&wg, func() {
+			if err := common.Alacritty(*c.Fedora.AlacrittyTag, false); err != nil {
+				logger.Errorf("error installing alacritty, error: %s", err)
+			}
+		})
+	}
 
 	utils.Go(&wg, func() {
 		if err := common.UniversalCtags(false); err != nil {
@@ -136,11 +138,13 @@ func Fedora(c *config.Config) {
 		}
 	})
 
-	utils.Go(&wg, func() {
-		if err := linux.Kubernetes(c.Fedora.Kubernetes); err != nil {
-			logger.Errorf("error installing kubernetes, error: %s", err)
-		}
-	})
+	if c.Fedora.Kubernetes != nil {
+		utils.Go(&wg, func() {
+			if err := linux.Kubernetes(*c.Fedora.Kubernetes); err != nil {
+				logger.Errorf("error installing kubernetes, error: %s", err)
+			}
+		})
+	}
 
 	wg.Wait()
 
