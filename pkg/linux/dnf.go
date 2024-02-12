@@ -14,6 +14,11 @@ import (
 func InstallFedoraPackages(packages []string) error {
 	logger.Infof("installing fedora packages %v", packages)
 
+	if len(packages) == 0 {
+		logger.Infof("no fedora packages to install")
+		return nil
+	}
+
 	commands := append([]string{"install", "-y"}, packages...)
 	out, err := exec.Command("dnf", commands...).CombinedOutput()
 	if err != nil {

@@ -12,8 +12,8 @@ import (
 type Config struct {
 	Dotfiles              Dotfiles `yaml:"dotfiles"`
 	Fedora                Fedora   `yaml:"fedora"`
-	FedoraServerMaster    Fedora   `yaml:"fedoraServer"`
-	FedoraServerNonMaster Fedora   `yaml:"FedoraServerNonMasterServer"`
+	FedoraServerMaster    Fedora   `yaml:"fedoraServerMaster"`
+	FedoraServerNonMaster Fedora   `yaml:"fedoraServerNonMasterServer"`
 	GoVersion             string   `yaml:"goVersion"`
 }
 
