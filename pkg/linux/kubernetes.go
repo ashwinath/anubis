@@ -59,7 +59,7 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 
 	// Install kubelet and kubeadm
 	if _, err := os.Stat(kubernetesRepoLocation); err != nil {
-		f, err := os.Create("kubernetesRepoLocation")
+		f, err := os.Create(kubernetesRepoLocation)
 		if err != nil {
 			return fmt.Errorf("could not create file at %s, error: %s", kubernetesRepoLocation, err)
 		}
@@ -98,15 +98,15 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 	}
 
 	if _, err := os.Stat("/etc/modules"); err != nil {
-		f, err := os.Create("kubernetesRepoLocation")
+		f, err := os.Create("/etc/modules")
 		if err != nil {
 			return fmt.Errorf("could not create file at %s, error: %s", kubernetesRepoLocation, err)
 		}
 
 		f.Close()
 
-		if err := os.WriteFile(kubernetesRepoLocation, []byte("br_netfilter"), 0644); err != nil {
-			return fmt.Errorf("Could not write to kubernetes.repo at %s", kubernetesRepoLocation)
+		if err := os.WriteFile("/etc/modules", []byte("br_netfilter"), 0644); err != nil {
+			return fmt.Errorf("Could not write to /etc/modules, error: %s", err)
 		}
 	}
 
@@ -166,6 +166,8 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 		// Not sure why this is even needed.
 		resetCNI()
 	} else {
+		logger.Infof("joining kubernetes cluster at %s", c.MasterIP)
+
 		token := os.Getenv("KUBEADM_JOIN_TOKEN")
 		if token == "" {
 			return fmt.Errorf("KUBEADM_JOIN_TOKEN is not set")
