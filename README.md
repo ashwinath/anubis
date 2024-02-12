@@ -18,8 +18,6 @@ Set `KUBEADM_JOIN_TOKEN` and `KUBEADM_JOIN_HASH` as environment variables before
 errors:
 
 ```
-/proc/self/fd/13:2: command not found: compdef
-/proc/self/fd/13:18: command not found: compdef
-/home/ashwin/dotfiles/zsh/zshrc:source:33: no such file or directory: /home/ashwin/.passwords
-/home/ashwin/dotfiles/zsh/zshrc:source:34: no such file or directory: /home/ashwin/.cargo/env
+ERROR: 2024/02/12 14:29:30 error installing binaries, error: could not exec as user, error: output: zsh:1: permission denied: /tmp/anubis/runbinaries/rustup-init
+, error: exit status 126
 ```

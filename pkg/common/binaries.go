@@ -104,7 +104,7 @@ func DownloadAndRunBinaries(binaries []config.RunBinary) error {
 
 	for _, bin := range binaries {
 		binaryLoc := getRunBinaryLocation(bin.Name)
-		err := os.Chmod(binaryLoc, 0700)
+		err := os.Chmod(binaryLoc, 0755)
 		if err != nil {
 			return fmt.Errorf("could not chmod binary %s: %v", bin.Name, err)
 		}
