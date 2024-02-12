@@ -10,6 +10,8 @@ import (
 )
 
 const tmpDir = "/tmp/anubis"
+const anubisHomeDirLinux = "/home/ashwin/anubis"
+const anubisHomeDirDarwin = "/Users/ashwin/anubis"
 const anubisYAMLGithub = "https://raw.githubusercontent.com/ashwinath/dotfiles/master/anubis/anubis.yaml"
 
 func main() {
@@ -28,6 +30,24 @@ func main() {
 	if err != nil {
 		logger.Errorf("error unmarshalling/downloading config file: %s", err)
 		return
+	}
+
+	// create tmp folder
+	if _, err := os.Stat(tmpDir); err != nil {
+		if err := os.MkdirAll(tmpDir, 0755); err != nil {
+			logger.Errorf("error creating tmp directory, %s", err)
+		}
+	}
+
+	// create home folder
+	anubisFolder := anubisHomeDirLinux
+	if *target == "darwin" {
+		anubisFolder = anubisHomeDirDarwin
+	}
+	if _, err := os.Stat(anubisFolder); err != nil {
+		if err := os.MkdirAll(anubisFolder, 0755); err != nil {
+			logger.Errorf("error creating tmp directory, %s", err)
+		}
 	}
 
 	if _, err := os.Stat(tmpDir); err != nil {

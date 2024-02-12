@@ -101,12 +101,6 @@ func Fedora(c *config.Config, fedora config.Fedora) {
 	})
 
 	utils.Go(&wg, func() {
-		if err := common.CompileYCM(false); err != nil {
-			logger.Errorf("error compiling YCM, error: %s", err)
-		}
-	})
-
-	utils.Go(&wg, func() {
 		if err := common.Fzf(false); err != nil {
 			logger.Errorf("error installing fzf, error: %s", err)
 		}
@@ -115,6 +109,10 @@ func Fedora(c *config.Config, fedora config.Fedora) {
 	utils.Go(&wg, func() {
 		if err := common.Neovim(false); err != nil {
 			logger.Errorf("error installing neovim, error: %s", err)
+		}
+
+		if err := common.CompileYCM(false); err != nil {
+			logger.Errorf("error compiling YCM, error: %s", err)
 		}
 	})
 
