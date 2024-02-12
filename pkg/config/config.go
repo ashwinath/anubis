@@ -1,15 +1,20 @@
 package config
 
 import (
+	"fmt"
+	"io"
+	"net/http"
 	"os"
 
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
-	Dotfiles  Dotfiles `yaml:"dotfiles"`
-	Fedora    Fedora   `yaml:"fedora"`
-	GoVersion string   `yaml:"goVersion"`
+	Dotfiles              Dotfiles `yaml:"dotfiles"`
+	Fedora                Fedora   `yaml:"fedora"`
+	FedoraServerMaster    Fedora   `yaml:"fedoraServer"`
+	FedoraServerNonMaster Fedora   `yaml:"FedoraServerNonMasterServer"`
+	GoVersion             string   `yaml:"goVersion"`
 }
 
 type Dotfiles struct {
@@ -84,5 +89,30 @@ func New(configFile string) (*Config, error) {
 	if err := yaml.Unmarshal(data, &c); err != nil {
 		return nil, err
 	}
+	return &c, nil
+}
+
+func NewFromGithubURL(url string) (*Config, error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+
+	c := Config{}
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("downloading config file returned non 200 status code, status code: %d", res.StatusCode)
+	}
+
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading res.Body from github config, error: %s", err)
+	}
+
+	if err := yaml.Unmarshal(b, &c); err != nil {
+		return nil, err
+	}
+
 	return &c, nil
 }

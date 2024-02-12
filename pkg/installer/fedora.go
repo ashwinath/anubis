@@ -10,27 +10,27 @@ import (
 	"github.com/ashwinath/anubis/pkg/utils"
 )
 
-func Fedora(c *config.Config) {
+func Fedora(c *config.Config, fedora config.Fedora) {
 	logger.Infof("begin processing for fedora server")
 
 	// synchronous
-	if err := linux.RegisterDNFRepository(c.Fedora.DNF.Repos); err != nil {
+	if err := linux.RegisterDNFRepository(fedora.DNF.Repos); err != nil {
 		logger.Errorf("error registering fedora repositories, error: %s", err)
 	}
 
-	if err := linux.EnableCoprPackages(c.Fedora.DNF.Copr); err != nil {
+	if err := linux.EnableCoprPackages(fedora.DNF.Copr); err != nil {
 		logger.Errorf("error registering copr repositories, error: %s", err)
 	}
 
-	if err := linux.InstallFedoraPackages(c.Fedora.DNF.Packages); err != nil {
+	if err := linux.InstallFedoraPackages(fedora.DNF.Packages); err != nil {
 		logger.Errorf("error installing fedora packages, error: %s", err)
 	}
 
-	if err := linux.StartAndEnableServices(c.Fedora.SystemdServices); err != nil {
+	if err := linux.StartAndEnableServices(fedora.SystemdServices); err != nil {
 		logger.Errorf("error enabling systemd services, error: %s", err)
 	}
 
-	if err := common.AddGroupToUser(c.Fedora.GroupsToAddToUser); err != nil {
+	if err := common.AddGroupToUser(fedora.GroupsToAddToUser); err != nil {
 		logger.Errorf("error adding groups to user: %s", err)
 	}
 
@@ -38,11 +38,11 @@ func Fedora(c *config.Config) {
 		logger.Errorf("error installing golang, error: %s", err)
 	}
 
-	if err := common.InstallBinaries(c.Fedora.Binaries); err != nil {
+	if err := common.InstallBinaries(fedora.Binaries); err != nil {
 		logger.Errorf("error installing binaries, error: %s", err)
 	}
 
-	if err := common.DownloadAndRunBinaries(c.Fedora.RunBinaries); err != nil {
+	if err := common.DownloadAndRunBinaries(fedora.RunBinaries); err != nil {
 		logger.Errorf("error installing binaries, error: %s", err)
 	}
 
@@ -53,7 +53,7 @@ func Fedora(c *config.Config) {
 			logger.Errorf("error cloning dotfiles, error: %s", err)
 		}
 
-		if err := common.ConfigureDotFiles(c.Fedora.DotFiles, false); err != nil {
+		if err := common.ConfigureDotFiles(fedora.DotFiles, false); err != nil {
 			logger.Errorf("error cloning dotfiles, error: %s", err)
 		}
 	})
@@ -65,25 +65,25 @@ func Fedora(c *config.Config) {
 	})
 
 	utils.Go(&wg, func() {
-		if err := linux.InstallFedoraRpms(c.Fedora.DNF.RPM); err != nil {
+		if err := linux.InstallFedoraRpms(fedora.DNF.RPM); err != nil {
 			logger.Errorf("error installing fedora rpms, error: %s", err)
 		}
 	})
 
 	utils.Go(&wg, func() {
-		if err := linux.FSTab(c.Fedora.FSTab); err != nil {
+		if err := linux.FSTab(fedora.FSTab); err != nil {
 			logger.Errorf("error editing /etc/fstab, error: %s", err)
 		}
 	})
 
 	utils.Go(&wg, func() {
-		if err := common.Pip(c.Fedora.Python.Packages); err != nil {
+		if err := common.Pip(fedora.Python.Packages); err != nil {
 			logger.Errorf("error running pip, error: %s", err)
 		}
 	})
 
 	utils.Go(&wg, func() {
-		if err := common.SSHAuthorizedKeys(c.Fedora.SSHPublicKeys, false); err != nil {
+		if err := common.SSHAuthorizedKeys(fedora.SSHPublicKeys, false); err != nil {
 			logger.Errorf("error running pip, error: %s", err)
 		}
 	})
@@ -118,9 +118,9 @@ func Fedora(c *config.Config) {
 		}
 	})
 
-	if c.Fedora.AlacrittyTag != nil {
+	if fedora.AlacrittyTag != nil {
 		utils.Go(&wg, func() {
-			if err := common.Alacritty(*c.Fedora.AlacrittyTag, false); err != nil {
+			if err := common.Alacritty(*fedora.AlacrittyTag, false); err != nil {
 				logger.Errorf("error installing alacritty, error: %s", err)
 			}
 		})
@@ -138,9 +138,9 @@ func Fedora(c *config.Config) {
 		}
 	})
 
-	if c.Fedora.Kubernetes != nil {
+	if fedora.Kubernetes != nil {
 		utils.Go(&wg, func() {
-			if err := linux.Kubernetes(*c.Fedora.Kubernetes); err != nil {
+			if err := linux.Kubernetes(*fedora.Kubernetes); err != nil {
 				logger.Errorf("error installing kubernetes, error: %s", err)
 			}
 		})

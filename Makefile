@@ -12,3 +12,7 @@ clean:
 
 build: clean
 	go build -o build/anubis cmd/anubis.go
+
+PHONY: fedora-github
+fedora-github:
+	sudo go run cmd/anubis.go --target fedora

@@ -10,15 +10,23 @@ import (
 )
 
 const tmpDir = "/tmp/anubis"
+const anubisYAMLGithub = "https://raw.githubusercontent.com/ashwinath/dotfiles/master/anubis/anubis.yaml"
 
 func main() {
 	target := flag.String("target", "", "target machine: fedora-server, fedora, darwin")
 	configPath := flag.String("config", "", "config file location")
 	flag.Parse()
 
-	c, err := config.New(*configPath)
+	var c *config.Config
+	var err error
+	if *configPath == "" {
+		c, err = config.NewFromGithubURL(anubisYAMLGithub)
+	} else {
+		c, err = config.New(*configPath)
+	}
+
 	if err != nil {
-		logger.Errorf("error unmarshalling config file: %s", err)
+		logger.Errorf("error unmarshalling/downloading config file: %s", err)
 		return
 	}
 
@@ -30,7 +38,12 @@ func main() {
 
 	switch *target {
 	case "fedora":
-		installer.Fedora(c)
+		installer.Fedora(c, c.Fedora)
+	case "fedora-server-master":
+		installer.Fedora(c, c.FedoraServerMaster)
+	case "fedora-server-non-master":
+		installer.Fedora(c, c.FedoraServerNonMaster)
 	default:
+		logger.Infof("no op, no such target: %s", *target)
 	}
 }
