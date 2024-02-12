@@ -24,6 +24,12 @@ func SSHAuthorizedKeys(keys []string, isDarwin bool) error {
 
 	sshPath := fmt.Sprintf(sshAuthorizedKeysPath, home)
 
+	if _, err := os.Stat(fmt.Sprintf("%s/.ssh", home)); err != nil {
+		if err := os.Mkdir(fmt.Sprintf("%s/.ssh", home), 0755); err != nil {
+			return fmt.Errorf("cannot create .ssh folder: %s", err)
+		}
+	}
+
 	// Create authorized_keys file if needed
 	if _, err := os.Stat(sshPath); err != nil {
 		if f, err := os.Create(sshPath); err != nil {
