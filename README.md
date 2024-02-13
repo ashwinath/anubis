@@ -16,4 +16,4 @@ Set `KUBEADM_JOIN_TOKEN` and `KUBEADM_JOIN_HASH` as environment variables before
 - get config from github instead of downloading together or use systemd
 - mac setup
 - portforward nodeports
-- research fedora problem with flannel, use calico with FELIX_IPTABLESBACKEND=NFT
+- must restart coredns after rejoining cluster? test this.
