@@ -34,9 +34,10 @@ func ConfigureFirewall(portsToAllow []string) error {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 
-	args := append([]string{"allow"}, portsToAllow...)
-	if out, err := exec.Command("ufw", args...).CombinedOutput(); err != nil {
-		return fmt.Errorf("output: %s, error: %v", string(out), err)
+	for _, port := range portsToAllow {
+		if out, err := exec.Command("ufw", "allow", port).CombinedOutput(); err != nil {
+			return fmt.Errorf("output: %s, error: %v", string(out), err)
+		}
 	}
 
 	if out, err := exec.Command("ufw", "default", "deny").CombinedOutput(); err != nil {
