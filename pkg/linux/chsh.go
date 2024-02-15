@@ -6,8 +6,7 @@ import (
 )
 
 func Chsh() error {
-	out, err := exec.Command("chsh", "--shell", "/usr/bin/zsh", "ashwin").CombinedOutput()
-	if err != nil {
+	if out, err := exec.Command("chsh", "--shell", "/usr/bin/zsh", "ashwin").CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
 	}
 

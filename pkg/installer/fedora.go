@@ -146,6 +146,12 @@ func Fedora(c *config.Config, fedora config.Fedora, skipFonts bool) {
 		})
 	}
 
+	utils.Go(&wg, func() {
+		if err := linux.ConfigureFirewall(fedora.FirewallPortsToAllow); err != nil {
+			logger.Errorf("error installing alacritty, error: %s", err)
+		}
+	})
+
 	wg.Wait()
 
 	logger.Infof("done processing for fedora server")

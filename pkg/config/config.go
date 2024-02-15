@@ -27,18 +27,19 @@ type GitRepo struct {
 }
 
 type Fedora struct {
-	AlacrittyTag      *string           `yaml:"alacrittyTag"`
-	DNF               DNF               `yaml:"dnf"`
-	Python            Python            `yaml:"python"`
-	Binaries          []Binary          `yaml:"binaries"`
-	RunBinaries       []RunBinary       `yaml:"runBinaries"`
-	Cargo             []string          `yaml:"cargo"`
-	DotFiles          []string          `yaml:"dotfiles"`
-	SSHPublicKeys     []string          `yaml:"sshPublicKeys"`
-	FSTab             []string          `yaml:"fstab"`
-	SystemdServices   []string          `yaml:"systemdServices"`
-	GroupsToAddToUser []string          `yaml:"groupsToAddToUser"`
-	Kubernetes        *KubernetesConfig `yaml:"kubernetes"`
+	AlacrittyTag         *string           `yaml:"alacrittyTag"`
+	DNF                  DNF               `yaml:"dnf"`
+	Python               Python            `yaml:"python"`
+	Binaries             []Binary          `yaml:"binaries"`
+	RunBinaries          []RunBinary       `yaml:"runBinaries"`
+	Cargo                []string          `yaml:"cargo"`
+	DotFiles             []string          `yaml:"dotfiles"`
+	SSHPublicKeys        []string          `yaml:"sshPublicKeys"`
+	FSTab                []string          `yaml:"fstab"`
+	SystemdServices      []string          `yaml:"systemdServices"`
+	GroupsToAddToUser    []string          `yaml:"groupsToAddToUser"`
+	Kubernetes           *KubernetesConfig `yaml:"kubernetes"`
+	FirewallPortsToAllow []string          `yaml:"string"`
 }
 
 type DNF struct {

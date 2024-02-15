@@ -83,20 +83,6 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 		return fmt.Errorf("could not enable kubelet, output: %s, error: %s", out, err)
 	}
 
-	// Allow firewall settings
-	if out, err := exec.Command("firewall-cmd", "--add-port=6443/tcp", "--add-port=10250/tcp", "--permanent").CombinedOutput(); err != nil {
-		return fmt.Errorf("could not enable kubelet, output: %s, error: %s", out, err)
-	}
-
-	if out, err := exec.Command("firewall-cmd", "--reload").CombinedOutput(); err != nil {
-		return fmt.Errorf("could not enable kubelet, output: %s, error: %s", out, err)
-	}
-
-	// Enable networking stuff
-	if out, err := exec.Command("firewall-cmd", "--reload").CombinedOutput(); err != nil {
-		return fmt.Errorf("could not enable kubelet, output: %s, error: %s", out, err)
-	}
-
 	if _, err := os.Stat("/etc/modules"); err != nil {
 		f, err := os.Create("/etc/modules")
 		if err != nil {
@@ -185,6 +171,8 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 		if out, err := exec.Command("kubeadm", "join", c.MasterIP, "--token", token, "--discovery-token-ca-cert-hash", hash, "--node-name", c.NodeName).CombinedOutput(); err != nil {
 			return fmt.Errorf("could call kubeadm join, output: %s, error: %s", out, err)
 		}
+
+		// TODO: restart coredns, there is no kubeconfig in the joined node
 	}
 
 	logger.Infof("done installing fresh set of kubernetes")
