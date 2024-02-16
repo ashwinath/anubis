@@ -132,23 +132,3 @@ fedora:
   kubernetes:
     version: v1.29
     isMaster: true
-  firewallPortsToAllow:
-  - 22/tcp
-  - 10250/tcp 
-  - 6443/tcp 
-  - 2379:2380/tcp 
-  - 443/tcp 
-  - 80/tcp 
-  - 8472/udp 
-  - 6379/tcp 
-  - 30000:32767/tcp 
-  - 30000:32767/udp 
-  - 9099/tcp 
-  - 10254/tcp 
-  - 19796/tcp 
-  - 9796/tcp 
-  - 4789/udp 
-  - 6783:6784/udp 
-  - 6783/tcp 
-  - 2376/tcp 
-  - 9090/tcp
