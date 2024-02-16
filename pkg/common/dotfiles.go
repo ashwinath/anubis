@@ -27,7 +27,7 @@ func CloneDotfiles(gitURL string, gitSSHURL string, isDarwin bool) error {
 		loc = darwinDotFilesLocation
 	}
 
-	if _, err := os.Stat(loc); err != nil {
+	if _, err := os.Stat(loc); err == nil {
 		if err := utils.ExecAsUser(fmt.Sprintf("git -C %s pull --ff-only", loc)); err != nil {
 			return fmt.Errorf("error pulling dotfiles, error %s", err)
 		}
