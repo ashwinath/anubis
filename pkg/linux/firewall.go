@@ -5,12 +5,7 @@ import (
 	"os/exec"
 )
 
-func ConfigureFirewall(portsToAllow []string) error {
-	if len(portsToAllow) == 0 {
-		// if it is not configured, best not touch anything
-		return nil
-	}
-
+func ConfigureFirewall() error {
 	// disable firewalld
 	if out, err := exec.Command("systemctl", "stop", "firewalld").CombinedOutput(); err != nil {
 		return fmt.Errorf("output: %s, error: %v", string(out), err)
