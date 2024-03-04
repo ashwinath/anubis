@@ -7,7 +7,7 @@ import (
 	"github.com/ashwinath/anubis/pkg/logger"
 )
 
-const sudoersConfigOverride = "Defaults secure_path = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/lib/snapd/snap/bin:/usr/local/go/bin:/home/ashwin/go/bin\n"
+const sudoersConfigOverride = "Defaults secure_path = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/lib/snapd/snap/bin:/usr/local/go/bin:/home/ashwin/go/bin:/usr/share/bcc/tools\n"
 const sudoersFileOverride = "/etc/sudoers.d/anubis"
 
 func Sudoers() error {
