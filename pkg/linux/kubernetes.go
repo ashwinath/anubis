@@ -28,11 +28,37 @@ var kubeletVersionRegex = regexp.MustCompile(`^Kubernetes (?P<version>v\d+\.\d+)
 func Kubernetes(c config.KubernetesConfig) error {
 	if version, ok := getKubernetesVersion(); ok {
 		if version != c.Version {
-			// TODO: change kubernetes version
+			return upgradeKubernetes(c)
 		}
 	} else {
 		return installFreshKubernetes(c)
 	}
+	return nil
+}
+
+func upgradeKubernetes(c config.KubernetesConfig) error {
+	if err := os.WriteFile(kubernetesRepoLocation, []byte(fmt.Sprintf(kubernetesRepoContentsFormat, c.Version, c.Version)), 0644); err != nil {
+		return fmt.Errorf("Could not write to kubernetes.repo at %s", kubernetesRepoLocation)
+	}
+
+	if err := UpdateDNFRepo(); err != nil {
+		return err
+	}
+
+	// Get the last minor version
+	kubeFullVersion, err := GetLatestVersionDNFApp("kubeadm", "--disableexcludes=kubernetes")
+	if err != nil {
+		return err
+	}
+
+	if err := InstallDNFApp(fmt.Sprintf("kubeadm-%s", kubeFullVersion), "--disableexcludes=kubernetes"); err != nil {
+		return err
+	}
+
+	if out, err := exec.Command("kubeadm", "upgrade", "apply", c.Version).CombinedOutput(); err != nil {
+		return fmt.Errorf("could not upgrade kubernetes using kubeadm upgrade, output: %s, error: %s", out, err)
+	}
+
 	return nil
 }
 

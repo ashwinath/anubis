@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 
 	"github.com/ashwinath/anubis/pkg/config"
@@ -101,4 +102,37 @@ func EnableCoprPackages(repos []string) error {
 	logger.Infof("done registering copr repositories")
 
 	return nil
+}
+
+func UpdateDNFRepo() error {
+	if out, err := exec.Command("dnf", "upgrade", "--refresh").CombinedOutput(); err != nil {
+		return fmt.Errorf("could not update dnf repositories, output: %s, error: %s", out, err)
+	}
+	return nil
+}
+
+func InstallDNFApp(app string, flags ...string) error {
+	allFlags := []string{"install", "-y", app}
+	allFlags = append(allFlags, flags...)
+	if out, err := exec.Command("dnf", allFlags...).CombinedOutput(); err != nil {
+		return fmt.Errorf("could install dnf app %s, output: %s, error: %s", app, out, err)
+	}
+	return nil
+}
+
+func GetLatestVersionDNFApp(app string, flags ...string) (string, error) {
+	allFlags := []string{"list", "--showduplicates", app}
+	allFlags = append(allFlags, flags...)
+	out, err := exec.Command("dnf", allFlags...).CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("could install list dnf app %s, output: %s, error: %s", app, out, err)
+	}
+
+	last := ""
+	for _, s := range strings.Split(string(out), "\n") {
+		if strings.Contains(s, "x86_64") {
+			last = s
+		}
+	}
+	return strings.Fields(last)[1], nil
 }
