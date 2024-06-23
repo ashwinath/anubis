@@ -105,7 +105,7 @@ func EnableCoprPackages(repos []string) error {
 }
 
 func UpdateDNFRepo() error {
-	if out, err := exec.Command("dnf", "upgrade", "--refresh").CombinedOutput(); err != nil {
+	if out, err := exec.Command("dnf", "upgrade", "--refresh", "-y").CombinedOutput(); err != nil {
 		return fmt.Errorf("could not update dnf repositories, output: %s, error: %s", out, err)
 	}
 	return nil
