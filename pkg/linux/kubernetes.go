@@ -55,7 +55,8 @@ func upgradeKubernetes(c config.KubernetesConfig) error {
 		return err
 	}
 
-	if out, err := exec.Command("kubeadm", "upgrade", "apply", c.Version).CombinedOutput(); err != nil {
+	semanticVersion := strings.Split(kubeFullVersion, "-")[0]
+	if out, err := exec.Command("kubeadm", "upgrade", "apply", "-y", semanticVersion).CombinedOutput(); err != nil {
 		return fmt.Errorf("could not upgrade kubernetes using kubeadm upgrade, output: %s, error: %s", out, err)
 	}
 
