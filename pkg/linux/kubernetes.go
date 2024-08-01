@@ -133,7 +133,8 @@ func installFreshKubernetes(c config.KubernetesConfig) error {
 
 	if c.IsMaster {
 		logger.Infof("is master, configuring master")
-		if out, err := exec.Command("kubeadm", "init", "--cri-socket", "/var/run/crio/crio.sock", "--pod-network-cidr", "10.244.0.0/16").CombinedOutput(); err != nil {
+		// TODO: don't hard code node name
+		if out, err := exec.Command("kubeadm", "init", "--cri-socket", "/var/run/crio/crio.sock", "--pod-network-cidr", "10.244.0.0/16", "--node-name", "elastic-1").CombinedOutput(); err != nil {
 			return fmt.Errorf("could not kubeadmin init, output: %s, error: %s", out, err)
 		}
 		// Kubeconfig
